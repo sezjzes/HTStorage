@@ -2,35 +2,36 @@
 // Created by Josh Szczesniak on 3/14/21.
 //
 
-#ifndef HTSTORAGE_CLEINT_H
-#define HTSTORAGE_CLEINT_H
+#ifndef HTSTORAGE_CLIENT_H
+#define HTSTORAGE_CLIENT_H
 #include "Job.h"
 #include "Shared_Files.h"
 
-class Cleint {
+class Client {
+    private:
     public:
         /**
          * create a client and to create and send a job
          */
-        Cleint();
+        Client();
+       ~Client();
 
         /**
          * create a shared files object and add files to it
          */
-        Shared_Files Initialize_Shared_Files();
+        Shared_Files InitializeSharedFiles();
 
         /**
          * create a job with attached files
          * @param sharedFiles attached files
          */
-        Job Initialize_Job(Shared_Files sharedFiles);
+        Job InitializeJob(Shared_Files sharedFiles);
 
         /**
          * send a job to the manager
          */
-        void send_job(Job jobToSend);
-
+        void SendJob(Job jobToSend);
 };
 
 
-#endif //HTSTORAGE_CLEINT_H
+#endif //HTSTORAGE_CLIENT_H

@@ -32,7 +32,7 @@ class Job {
         /**
          * run the job on the server
          */
-        void run();
+        void Run();
 
         /**
          * get this job's info from client
@@ -52,7 +52,7 @@ class Job {
         /**
          * create a files object to add files to from a serialized object that was sent over the network
          */
-        Job(char* seiralizedVersion);
+        Job(char* serializedVersion);
 
 
 };

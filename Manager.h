@@ -1,18 +1,17 @@
-#ifndef HTSTORAGE_JOB_QUEUE_H
-#define HTSTORAGE_JOB_QUEUE_H
+#ifndef HTSTORAGE_MANAGER_H
+#define HTSTORAGE_MANAGER_H
 #include <queue>
 #include "Job.h"
 
-class JobQueue {
- private:
+class Manager {
+private:
     std::queue<Job> job_queue;
- public:
+public:
     std::queue<Job> getQueue();
     void addToQueue(Job job);
     Job getNextJob();
-
-
+    void sortQueue();
 
 }
 
-#endif //HTSTORAGE_JOB_QUEUE_H
+#endif //HTSTORAGE_MANAGER_H

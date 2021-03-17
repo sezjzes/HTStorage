@@ -4,7 +4,7 @@
 
 #ifndef HTSTORAGE_JOB_H
 #define HTSTORAGE_JOB_H
-#include "Shared_Files.h"
+#include "SharedFiles.h"
 
 class Job {
     public:
@@ -15,7 +15,7 @@ class Job {
          * @param files associated files object
          * @param code code to be run (may not be best as a char* unsure what to do)
          */
-        Job(Shared_Files files, char * code);
+        Job(SharedFiles files, char * code);
 
         /**
          * set up a way for job to be requested by storage
@@ -42,7 +42,7 @@ class Job {
         /**
          * get the attached Shared_files object
          */
-        Shared_Files get_storage();
+        SharedFiles get_storage();
 
     //network
         /**

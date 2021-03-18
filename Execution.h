@@ -7,7 +7,8 @@
 class Execution {
  private:
     Job job;
-    File current_file;
+    std::fstream  input_file;
+    std::fstream output_file;
  public:
     Execution();
     ~Execution();
@@ -17,8 +18,8 @@ class Execution {
     void write();
     Job getJob();
     void setJob(Job & job);
-    File getCurrentFile();
-    void setCurrentFile(File file);
+    std::fstream getCurrentFile();
+    void setCurrentFile(std::fstream file);
 };
 
 #endif //HTSTORAGE_EXECUTION_H

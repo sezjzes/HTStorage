@@ -4,15 +4,17 @@
 
 #ifndef HTSTORAGE_SHARED_FILES_H
 #define HTSTORAGE_SHARED_FILES_H
-
+#include <filesystem>
 
 class SharedFiles {
+private:
+    filesystem::directory_entry current_directory;
 public:
     //client
     /**
      * create a files object to add files to from the client
      */
-    SharedFiles();
+    SharedFiles(filesystem::path & path);
     ~SharedFiles();
     /**
      * add a file to the file structure

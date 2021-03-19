@@ -2,13 +2,14 @@
 #define HTSTORAGE_EXECUTION_H
 #include <fstream>
 #include "Job.h"
+using namespace std;
 
 
 class Execution {
  private:
     Job job;
-    std::fstream  input_file;
-    std::fstream output_file;
+    fstream  input_file;
+    fstream output_file;
  public:
     Execution();
     ~Execution();
@@ -18,8 +19,8 @@ class Execution {
     void write();
     Job getJob();
     void setJob(Job & job);
-    std::fstream getCurrentFile();
-    void setCurrentFile(std::fstream file);
+    fstream getFile();
+    void setCurrentFile(fstream file);
 };
 
 #endif //HTSTORAGE_EXECUTION_H

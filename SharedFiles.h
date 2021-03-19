@@ -5,22 +5,27 @@
 #ifndef HTSTORAGE_SHARED_FILES_H
 #define HTSTORAGE_SHARED_FILES_H
 #include <filesystem>
+#include <fstream>
+#include <iostream>
+namespace fs = filesystem;
+
 
 class SharedFiles {
 private:
-    filesystem::directory_entry current_directory;
+    fs::directory_entry directory;
 public:
     //client
     /**
      * create a files object to add files to from the client
      */
-    SharedFiles(filesystem::path & path);
+    SharedFiles();
+    SharedFiles(fs::path & path);
     ~SharedFiles();
     /**
      * add a file to the file structure
      * @param pathToFile pathToFile on disk
      */
-    void addFile(char pathToFile);
+    void addFile(fs::path & path);
     /**
      * set up a way for files to be requested by storage
      */
@@ -64,13 +69,13 @@ public:
      * @param fileName file name on client device
      * @return out of read
      */
-    char* read(char* fileName);
+    istream & read(ifstream & input_file);
     /**
      * write to a file from in closest non-local object
      * @param fileName file name on client device
      * @param toWrite string to write (maybe want bit write instead?)
      */
-    void write(char* fileName, char* toWrite);
+    void write(ofstream & output_file, char* buffer_to_write, streamsize buffer_size );
 
     //network
     /**

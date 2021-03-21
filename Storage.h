@@ -3,11 +3,14 @@
 #include <string>
 #include <set>
 #include "SharedFiles.h"
+#include "ResourceAd.h"
+using namespace std;
 
 
 class Storage {
 private:
     SharedFiles shared_files;
+    ResourceAd resource_ad;
 public:
     File getFile(std::string file_name);
     bool checkIfHasFile(std::string file_name);

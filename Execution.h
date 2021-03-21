@@ -2,6 +2,7 @@
 #define HTSTORAGE_EXECUTION_H
 #include <fstream>
 #include "Job.h"
+#include "ResourceAd.h"
 using namespace std;
 
 
@@ -10,6 +11,7 @@ class Execution {
     Job job;
     fstream  input_file;
     fstream output_file;
+    ResourceAd resource_ad;
  public:
     Execution();
     ~Execution();

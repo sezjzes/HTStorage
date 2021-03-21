@@ -5,7 +5,7 @@
 #ifndef HTSTORAGE_CLIENT_H
 #define HTSTORAGE_CLIENT_H
 #include "Job.h"
-#include "Shared_Files.h"
+#include "SharedFiles.h"
 
 class Client {
     private:
@@ -19,13 +19,13 @@ class Client {
         /**
          * create a shared files object and add files to it
          */
-        Shared_Files InitializeSharedFiles();
+        SharedFiles InitializeSharedFiles();
 
         /**
          * create a job with attached files
          * @param sharedFiles attached files
          */
-        Job InitializeJob(Shared_Files sharedFiles);
+        Job InitializeJob(SharedFiles sharedFiles);
 
         /**
          * send a job to the manager

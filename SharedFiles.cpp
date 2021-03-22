@@ -3,23 +3,23 @@
 //
 
 #include "SharedFiles.h"
-#include <filesystem>
+//#include <filesystem>
 using namespace std;
-namespace fs = filesystem;
+//namespace fs = filesystem;
 
-SharedFiles::SharedFiles() {
-    directory = fs::create_directory();
-}
+// SharedFiles::SharedFiles() {
+//     directory = fs::create_directory();
+// }
 
-SharedFiles::SharedFiles(fs::path & path) {
-    directory = fs::create_directory(path);
-}
+// SharedFiles::SharedFiles(fs::path & path) {
+//     //directory = fs::create_directory(path);
+// }
 
-SharedFiles::~SharedFiles() {
-    fs::remove_all(directory.path());
-    directory = nullptr;
-}
+// SharedFiles::~SharedFiles() {
+//     fs::remove_all(directory.path());
+//     directory = nullptr;
+// }
 
-SharedFiles::addFile(fs::path & input_path) {
-    fs::copy_file(input_path, directory / input_path);
-}
+// SharedFiles::addFile(fs::path & input_path) {
+//     fs::copy_file(input_path, directory / input_path);
+// }

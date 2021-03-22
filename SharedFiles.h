@@ -4,28 +4,29 @@
 
 #ifndef HTSTORAGE_SHARED_FILES_H
 #define HTSTORAGE_SHARED_FILES_H
-#include <filesystem>
+//#include <filesystem>
 #include <fstream>
 #include <iostream>
-namespace fs = filesystem;
+//namespace fs = filesystem;
+using namespace std;
 
 
 class SharedFiles {
 private:
-    fs::directory_entry directory;
+    //fs::directory_entry directory;
 public:
     //client
     /**
      * create a files object to add files to from the client
      */
     SharedFiles();
-    SharedFiles(fs::path & path);
+    //SharedFiles(fs::path & path);
     ~SharedFiles();
     /**
      * add a file to the file structure
      * @param pathToFile pathToFile on disk
      */
-    void addFile(fs::path & path);
+    //void addFile(fs::path & path);
     /**
      * set up a way for files to be requested by storage
      */
@@ -85,7 +86,7 @@ public:
     /**
      * create a files object to add files to from a serialized object that was sent over the network
      */
-    Shared_Files(char* serializedVersion);
+    ofstream Shared_Files(char* serializedVersion);
 
 
 };

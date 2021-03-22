@@ -6,6 +6,7 @@
 #include <map>
 using namespace std;
 
+
 class ResourceAd {
 private:
     int resource_id;
@@ -14,13 +15,18 @@ private:
     int available_compute;
     int total_storage;
     int total_compute;
-    /**
-    int longitude;
-    int latitude;
-    int region;
-     */
 public:
-    // Checks if the resource_ad_type needs to be updated or not based on the changes in storage or compute.
-    void updateResourceAdType();
-}
+    int getResourceID();
+    void setResourceID(int resource_id);
+    string getResourceAdType();
+    void setResourceAdType(string resource_ad_type);
+    int getAvailableStorage();
+    void setAvailableStorage(int available_storage);
+    int getAvailableCompute();
+    void setAvailableCompute(int available_compute);
+    int getTotalStorage();
+    void setTotalStorage(int total_storage);
+    int getTotalCompute();
+    void setTotalCompute(int total_compute);
+};
 #endif //HTSTORAGE_RESOURCE_AD_H

@@ -16,6 +16,8 @@ private:
     double percent_completed;
     double current_runtime;
     double max_runtime;
+    int required_storage;
+    int required_compute;
 public:
     //client
 
@@ -69,6 +71,10 @@ public:
      * create a files object to add files to from a serialized object that was sent over the network
      */
     Job(char* serializedVersion);
+
+    int getRequiredStorage();
+
+    int getRequiredCompute();
 
 
 };

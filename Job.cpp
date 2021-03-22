@@ -24,3 +24,11 @@ void Job::UpdateRuntime(double completed_sub_job_runtime) {
 void Job::UpdatePercentCompleted() {
     percent_completed = sub_jobs_left_to_run / total_number_of_sub_jobs;
 }
+
+int Job::getRequiredStorage() {
+    return required_storage;
+}
+
+int Job::getRequiredCompute() {
+    return required_compute;
+}

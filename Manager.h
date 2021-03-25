@@ -3,7 +3,8 @@
 #include <queue>
 #include <vector>
 #include <unordered_map>
-#include <set>
+#include <unordered_set>
+#include <string>
 #include "Job.h"
 #include "Execution.h"
 #include "ResourceAd.h"
@@ -12,8 +13,9 @@ using namespace std;
 class Manager {
 public:
     queue<Job> job_queue;
-    unordered_map<int, map<float, set<int>>> closest_resources;
+    unordered_map<int, unordered_map<string, map<float, unordered_set<int>>>> closest_resources;
     unordered_map<int, ResourceAd> resource_map;
+    // TODO: Create an unordered map to the ip address and port of each resource.
     queue<Job> getQueue();
     void addToQueue(Job job);
     Job getNextJob();

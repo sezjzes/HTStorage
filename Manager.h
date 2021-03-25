@@ -10,11 +10,10 @@
 using namespace std;
 
 class Manager {
-private:
+public:
     queue<Job> job_queue;
     unordered_map<int, map<float, set<int>>> closest_resources;
     unordered_map<int, ResourceAd> resource_map;
-public:
     queue<Job> getQueue();
     void addToQueue(Job job);
     Job getNextJob();

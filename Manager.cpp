@@ -17,6 +17,7 @@ Job Manager::getNextJob() {
     return job_queue.pop();
 }
 
+// Match compute first then closest storage.
 vector<int> Manager::MatchJobToResources1(Job job) {
     int required_compute = job.getRequiredCompute();
     int required_storage = job.getRequiredStorage();
@@ -25,16 +26,20 @@ vector<int> Manager::MatchJobToResources1(Job job) {
 
     for (auto i = resource_map.begin(); i != resource_map.end(); ++i) {
         int available_compute = i->second.getAvailableCompute();
-        if (required_compute > 0 && available_compute <= required_compute) {
+	if (required_compute <= 0) {
+	  break;
+	} else if (required_compute > 0 && available_compute >= required_compute) {
             resource_vector.push_back(i->second.getResourceID());
-            required_compute -= available_compute;
+	    break;
         }
+    }
 
-        int available_storage = i->second.getAvailableStorage();
+
+
+            int available_storage = i->second.getAvailableStorage();
         if (required_storage > 0 && available_storage <= required_storage) {
             available_storage_resources.insert(i->second.getResourceID());
         }
-    }
 
 
 
@@ -44,6 +49,7 @@ vector<int> Manager::MatchJobToResources1(Job job) {
 
 }
 
+// Matching storage first then closest compute.
 vector<int> Manager::MatchJobToResources2(Job job) {
     int required_storage = job.getRequiredStorage();
     int required_compute = job.getRequiredCompute();

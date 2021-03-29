@@ -4,29 +4,40 @@
 
 #ifndef HTSTORAGE_SHARED_FILES_H
 #define HTSTORAGE_SHARED_FILES_H
-//#include <filesystem>
+
 #include <fstream>
 #include <iostream>
-//namespace fs = filesystem;
-using namespace std;
+#include <string>
+#include <list>
 
+using namespace std;
+struct Location{
+    char* ip;
+    int readPort;
+    int writePort;
+};
 
 class SharedFiles {
 private:
-    //fs::directory_entry directory;
+    //where the files are hosted
+    string localPath;
+    int size;
+    list<Location> locations;
+
+
 public:
     //client
     /**
      * create a files object to add files to from the client
      */
-    SharedFiles();
-    //SharedFiles(fs::path & path);
+    SharedFiles(string pathToSharedFiles, int writeSize);
+
     ~SharedFiles();
     /**
      * add a file to the file structure
      * @param pathToFile pathToFile on disk
      */
-    //void addFile(fs::path & path);
+
     /**
      * set up a way for files to be requested by storage
      */
@@ -49,34 +60,86 @@ public:
      * pull all files in from closest copy of the object
      */
     void pullInFiles();
+
     /**
      * write out all files to all replicas of the object
      */
     void writeOutFiles();
 
     /**
-     * allow individual files to be requested for read
+     * start sharing files from the currents
+     *          allow writes
+     *          allow reads
+     *          gets ip
+     *          adds it's self to the local locations
+     *          some how sends out this location to replicas
+     *
      */
-    void allowRead();
+    void beginSharingFiles();
+
+
     /**
-     * allow individual files to be written
+     * gets the local ip
+     * @return local ip address
      */
-    void allowWrite();
+     char* getLocalIp();
+
+    /**
+     * allow individual files to be requested for read
+     *
+     * set up a server socket that spawns a thread with each connection
+     * this thread grabs a file name from its first message
+     * opens it and keeps the pipe full with that file till it's all read or the connection is closed
+     * cleans itself up when the connection is closed or when the entire file is read
+     *
+     * @return the port of the listening socket
+     *
+     */
+    int allowRead();
+
+    /**
+     * allow individual files to be written to
+     *
+     * set up a server socket that spawns a thread with each connection
+     * this thread grabs a file name from its first message
+     * opens it and then waits for incoming messages writing them out to said files
+     * cleans itself up when the connection is closed
+     *
+     * @return the port of the listening socket
+     *
+     */
+    int allowWrite();
 
     //execution
     //look into making this match c++ standard read write
     /**
-     * read a file from closest non-local object
+     * "open" a non-local file in read only mode
+     *
+     * open a connection so that reads from the returned socket will
+     * read out the same as if a file was being read from the storage device
+     *
+     * note: sockets will have to use c read syntax as there is no good way to wrap a file dir in the C++ fstreams
+     *
      * @param fileName file name on client device
-     * @return out of read
+     *
+     * @return file descriptor
      */
-    istream & read(ifstream & input_file);
+    int openFileReadOnly(string fileName);
     /**
-     * write to a file from in closest non-local object
+     * "open" a non-local file in write only mode
+     *
+     * open a connection so that writes to the returned socket will write out to a file on the storage device
+     *
+     *
+     * note: sockets will have to use c read syntax as there is no good way to wrap a file dir in the C++ fstreams
+     *
      * @param fileName file name on client device
-     * @param toWrite string to write (maybe want bit write instead?)
+     *
+     *
+     * @return file descriptor
+     *
      */
-    void write(ofstream & output_file, char* buffer_to_write, streamsize buffer_size );
+    int openFileWriteOnly(string fileName);
 
     //network
     /**
@@ -86,7 +149,7 @@ public:
     /**
      * create a files object to add files to from a serialized object that was sent over the network
      */
-    ofstream Shared_Files(char* serializedVersion);
+    //SharedFiles(char* serializedVersion);
 
 
 };

@@ -185,6 +185,7 @@ int Job::SerializeSelf(char *buff) {
     s->binaryPort = htonl(binaryPort);
     strncpy(s->binaryIp, binaryIp,15);
     ps += shared_files.serializeSelf((char *) &s->sf);
+    cout<<ntohl(s->sf.locationList.numLocations)<<endl;
     s->packageSize = htonl(ps);
     return ps + 4;
 }
@@ -194,5 +195,7 @@ Job::Job(char *serializedVersion) {
     required_compute = ntohl(s->required_compute);
     binaryPort = ntohl(s->binaryPort);
     strncpy(binaryIp, s->binaryIp,15);
+    cout<<binaryPort<<endl;
+    cout<<ntohl(s->sf.locationList.numLocations)<<endl;
     shared_files = SharedFiles((char*)&s->sf);
 }

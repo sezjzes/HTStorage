@@ -506,6 +506,7 @@ int SharedFiles::serializeLocationList(char *buff) {
     serializedLocationList * sll = (serializedLocationList *)buff;
     int ps = 4;
     sll->numLocations = htonl(locations.size());
+    cout<<ntohl(sll->numLocations)<<endl;
     int i = 0;
     for(Location l: locations){
         ps += serializeLocation((char *) &sll->locations[i], l);
@@ -529,7 +530,7 @@ int SharedFiles::serializeLocation(char *buff, Location l) {
 Location SharedFiles::unserializeLocation(serializedLocation *sl) {
     Location l;
     strncpy(l.ip, sl->ip, 15);
-    l.isClient = sl->isClient = l.isClient;
+    l.isClient = sl->isClient;
     l.pullInPort  = ntohl(sl->pullInPort);
     l.writeOutPort = ntohl(sl->writeOutPort);
     l.writePort = ntohl(sl->writePort);

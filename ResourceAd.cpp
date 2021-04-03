@@ -1,5 +1,23 @@
 #include "ResourceAd.h"
 #include <string>
+#include <iostream>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <string>
+#include <iostream>
+#include <filesystem>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include "pinger.h"
+#include <unistd.h>
+#include "Manager.h"
+#include <stdio.h>
+#include <string.h>
+
 using namespace std;
 
 
@@ -91,7 +109,7 @@ void ResourceAd::serializeSelf(char *buff) {
     sr->total_storage = htonl(total_storage);
     sr->total_compute = htonl(total_compute);
     strncpy(sr->ip, ip, 15);
-    sr->port = htonl(total_compute);
+    sr->port = htonl(port);
 }
 
 ResourceAd::ResourceAd(char *buff) {
@@ -103,7 +121,7 @@ ResourceAd::ResourceAd(char *buff) {
     total_storage = ntohl(sr->total_storage);
     total_compute = ntohl(sr->total_compute);
     strncpy(ip, sr->ip, 15);
-    port = htonl(sr->total_compute);
+    port = ntohl(sr->port);
 }
 
 

@@ -25,9 +25,9 @@ void Resource::advertiseToManager(char* managerIp, int port) {
     serv_addr.sin_port = htons(port);
     inet_pton(AF_INET, managerIp, &serv_addr.sin_addr);
     connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
-    char buff[ResourceAd::resourceAdSize];
+    char buff[resourceAdSize];
     resourceAd.serializeSelf(buff);
-    write(soc_fd, buff, ResourceAd::resourceAdSize);
+    write(soc_fd, buff, resourceAdSize);
 
     int nrid;
     read(soc_fd, (char*) &nrid, 4);

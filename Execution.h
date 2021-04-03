@@ -4,6 +4,7 @@
 #include "Job.h"
 #include "ResourceAd.h"
 #include "Resource.h"
+#include <queue>
 using namespace std;
 
 
@@ -13,27 +14,22 @@ class Execution: public Resource{
     char localIp[15];
     int localPort;
 
- public:
-    Execution();
+public:
+
+    string jobDir;
+    int fileNum;
+    Execution(string jobDir);
     ~Execution();
     void allowRecieveJob();
     void createResourceAd(int compute);
     void executeJobs();
 
+    queue<Job> job_queue;
+};
 
-
-
-
-
-
-    void runJob();
-    void getStorage();
-    void read();
-    void write();
-    Job getJob();
-    void setJob(Job & job);
-    fstream getFile();
-    void setCurrentFile(fstream file);
+struct argumentsExecution{
+    int soc;
+    Execution *e;
 };
 
 #endif //HTSTORAGE_EXECUTION_H

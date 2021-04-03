@@ -48,9 +48,9 @@ vector<int> Manager::MatchJobToResources1(Job job) {
 	    break;
         }
     }
-
     // Finds a primary storage node and a backup storage node. Adds them to the resource_vector.
     map<int, unordered_set<int>> temp_closest_resources = closest_resources[resource_vector.at(0)]["storage"];
+
     for (auto i = temp_closest_resources.begin(); i != temp_closest_resources.end(); ++i) {
         if (resource_vector.size() >= 3) {
             break;
@@ -112,7 +112,7 @@ vector<int> Manager::MatchJobToResources2(Job job) {
             ResourceAd resource_ad = resource_map.at(*j);
             if (resource_ad.getAvailableCompute() >= required_compute) {
                 resource_vector.push_back(*j);
-                resource_vector.reserve(2);
+                resource_vector.reserve(3);
                 break;
             }
         }
@@ -123,8 +123,8 @@ vector<int> Manager::MatchJobToResources2(Job job) {
 
 
 void Manager::processIncomingResourceAd(int socFd){
-    char buff[ResourceAd::resourceAdSize];
-    read(socFd, buff, ResourceAd::resourceAdSize);
+    char buff[resourceAdSize];
+    read(socFd, buff, resourceAdSize);
     ResourceAd ra = ResourceAd(buff);
     if (ra.getResourceID() == -1){
         //add new resource
@@ -153,21 +153,20 @@ void Manager::processIncomingResourceAd(int socFd){
         closest_resources[ra.getResourceID()]["compute"] = map<int, unordered_set<int>>();
         for(int i = 0; i < resource_map.size(); i++){
             string type = resource_map[rl[i].resourceId].getResourceAdType();
-            auto m = closest_resources[ra.getResourceID()][type];
+            auto &m = closest_resources[ra.getResourceID()][type];
             if(m.find(rl[i].pingTime) == m.end()){
                 m[rl[i].pingTime] = unordered_set<int>();
                 m[rl[i].pingTime].insert(rl[i].resourceId);
             } else {
                 m[rl[i].pingTime].insert(rl[i].resourceId);
             }
-            m = closest_resources[rl->resourceId][ra.getResourceAdType()];
-            if(m.find(rl[i].pingTime) == m.end()){
-                m[rl[i].pingTime] = unordered_set<int>();
-                m[rl[i].pingTime].insert(rl[i].resourceId);
+            auto &m2 = closest_resources[rl[i].resourceId][ra.getResourceAdType()];
+            if(m2.find(rl[i].pingTime) == m.end()){
+                m2[rl[i].pingTime] = unordered_set<int>();
+                m2[rl[i].pingTime].insert(ra.getResourceID());
             } else {
-                m[rl[i].pingTime].insert(rl[i].resourceId);
+                m2[rl[i].pingTime].insert(ra.getResourceID());
             }
-
         }
         resource_map[ra.getResourceID()] = ra;
     } else {
@@ -274,7 +273,50 @@ void Manager::acceptNewJobs() {
     cout << "accepting new jobs on port: " << port << endl;
 
 }
+void Manager::sendJobToCompute(Job j, ResourceAd c){
+    c.setAvailableCompute(c.getAvailableCompute() - j.getRequiredCompute());
+    int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in serv_addr;
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(c.getPort());
+    inet_pton(AF_INET, c.getIp(), &serv_addr.sin_addr);
 
-void Manager::assignJobs() {
+    if(connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))){
+        perror("connect");
+    }
+    char buff[2048];
+    write(soc_fd, buff, j.SerializeSelf(buff));
 
 }
+
+
+void Manager::sendStorageToStorage(Job j, ResourceAd c) {
+    c.setAvailableCompute(c.getAvailableStorage() - j.getRequiredStorage());
+    int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in serv_addr;
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(c.getPort());
+    inet_pton(AF_INET, c.getIp(), &serv_addr.sin_addr);
+    if(connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))){
+        perror("connect");
+    }
+    char buff[2048];
+    write(soc_fd, buff, j.GetStorage().serializeSelf(buff));
+}
+
+void Manager::assignJobs() {
+    while(true){
+        if (job_queue.size() < 1){
+            continue;
+        }
+        Job j = getNextJob();
+        vector<int> r = MatchJobToResources1(j);
+        ResourceAd s1 = resource_map[r[1]];
+        sendStorageToStorage(j, s1);
+        ResourceAd s2 = resource_map[r[2]];
+        sendStorageToStorage(j, s2);
+        ResourceAd c = resource_map[r[0]];
+        sendJobToCompute(j, c);
+    }
+}
+

@@ -6,7 +6,7 @@
 #include "Resource.h"
 
 int main() {
-    Execution e = Execution();
+    Execution e = Execution("/Users/joshszczesniak/Desktop/525/HTStorage/workingDir/execution");
     e.allowRecieveJob();
     e.createResourceAd(1024);
 

@@ -26,7 +26,7 @@ public:
 
     void processIncomingResourceAd(int socFd);
 
-
+    void sendJobToCompute(Job j, ResourceAd c);
 
 
 
@@ -49,6 +49,8 @@ public:
     void getResourceAdUpdates();
     // Updates the resource_map's current ResourceAd for the specific resource.
     void updateResourceAd(ResourceAd);
+
+    void sendStorageToStorage(Job job, ResourceAd ad);
 };
 
 

@@ -19,7 +19,6 @@ private:
     int port;
 
 public:
-    static const int resourceAdSize = 59;
     ResourceAd();
     ResourceAd(int resource_id, string resource_ad_type, int available_storage, int available_compute,
                int total_storage, int total_compute, char ip[15], int port);
@@ -55,4 +54,6 @@ struct serializedResourceAd{
     char ip[15];
     int port;
 };
+
+static const int resourceAdSize = sizeof(serializedResourceAd);
 #endif //HTSTORAGE_RESOURCE_AD_H

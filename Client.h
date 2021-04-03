@@ -9,28 +9,20 @@
 
 class Client {
     private:
+        Job j;
     public:
         /**
          * create a client and to create and send a job
          */
-        Client();
+        Client(string binary, int compute, string files, int writeSize);
        ~Client();
-
-        /**
-         * create a shared files object and add files to it
-         */
-        SharedFiles InitializeSharedFiles();
-
-        /**
-         * create a job with attached files
-         * @param sharedFiles attached files
-         */
-        Job InitializeJob(SharedFiles sharedFiles);
 
         /**
          * send a job to the manager
          */
-        void SendJob(Job jobToSend);
+        void sendJobToManger(char* ip, int port);
+
+        void waitForComplete();
 };
 
 

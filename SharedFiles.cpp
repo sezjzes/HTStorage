@@ -147,6 +147,7 @@ static void* writeHelper(void *args){
     arguments* arg = (arguments*)args;
     int soc_fd = arg->soc;
     string localPath = arg->localPath;
+
     char fileName[2048];
     int i = 0;
     read(soc_fd, fileName + i, 1);
@@ -158,6 +159,7 @@ static void* writeHelper(void *args){
     string fn = fileName;
     string filePath = localPath + "/"+ fileName;
     int fd = open(&filePath[0], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+
     char buff[2048];
     while(1){
         int r=read(soc_fd, buff, 2048);
@@ -184,11 +186,12 @@ static void* writeHelper(void *args){
     while (1){
         soc_fd = accept(server_fd, &address,
                         (socklen_t*)&addrlen);
+
         if (soc_fd < 0){
             perror("accept");
         }
         arg->soc = soc_fd;
-        pthread_create(&p, NULL, writeHelper, (void*) arg);
+        pthread_create(&p, NULL, writeHelper, args);
     }
 }
 
@@ -211,8 +214,6 @@ int SharedFiles::allowWrite() {
     listen(server_fd, 3);
     pthread_t p;
     arguments* args = new arguments;
-    arguments arg;
-    args = &arg;
     args->soc = server_fd;
     args->localPath = localPath;
     pthread_create(&p, NULL,

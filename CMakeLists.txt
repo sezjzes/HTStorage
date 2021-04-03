@@ -10,3 +10,6 @@ add_executable(Execution runExecution.cpp Execution.h Execution.cpp ResourceAd.h
         Job.h Job.cpp SharedFiles.h SharedFiles.cpp pinger.h pinger.cpp Resource.h Resource.cpp)
 add_executable(Storage runStorage.cpp Storage.h Storage.cpp ResourceAd.h ResourceAd.cpp
         Job.h Job.cpp SharedFiles.h SharedFiles.cpp pinger.h pinger.cpp Resource.h Resource.cpp)
+
+add_executable(Client runClient.cpp Client.h Client.cpp  ResourceAd.h ResourceAd.cpp
+        Job.h Job.cpp SharedFiles.h SharedFiles.cpp pinger.h pinger.cpp Resource.h Resource.cpp)

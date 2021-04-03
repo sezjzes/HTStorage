@@ -29,7 +29,8 @@ void Manager::addToQueue(Job job) {
 
 Job Manager::getNextJob() {
     Job f = job_queue.front();
-    return job_queue.front();
+    job_queue.pop();
+    return f;
 }
 
 // TODO: Need to figure out how fault tolerance plays into this list, how it gets removed. Perhaps has to check a deleted node list before adding it. or can check for a key in the resource_map first before moving forward.
@@ -173,7 +174,6 @@ void Manager::processIncomingResourceAd(int socFd){
         //update resource
         resource_map[ra.getResourceID()] = ra;
     }
-    cout<<resource_map.size()<<endl;
 }
 
 static void* acceptNewResourceAdsLoop(void * args) {
@@ -225,7 +225,53 @@ void Manager::acceptNewResourceAds() {
     cout << "accepting new resources on port: " << port << endl;
 }
 
+static void* acceptNewJobsLoop(void * args) {
+    argumentsManager *arg = (argumentsManager *) args;
+    Manager *m = arg->m;
+    int soc_fd, server_fd;
+    server_fd = arg->soc;
+    struct sockaddr address;
+    int addrlen = sizeof(address);
+
+    while (true) {
+        soc_fd = accept(server_fd, &address,
+                        (socklen_t *) &addrlen);
+        if (soc_fd < 0) {
+            perror("accept");
+            break;
+        }
+        serializedJob j;
+        read(soc_fd, (char*)&j, 4);
+        read(soc_fd, (char*)&j+4, ntohl(j.packageSize));
+        m->addToQueue(Job((char *) &j));
+    }
+}
+
 void Manager::acceptNewJobs() {
+    int server_fd;
+    int port;
+    int opt = 1;
+    struct sockaddr_in address;
+
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR,
+               &opt, sizeof(opt));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    for (port = 8080; 1; ++port) {
+        address.sin_port = htons(port);
+        if (::bind(server_fd, (struct sockaddr *) &address, (socklen_t)sizeof(address)) == 0){
+            break;
+        }
+    }
+    listen(server_fd, 3);
+    pthread_t p;
+    argumentsManager * args = new argumentsManager();
+    args->m = this;
+    args->soc = server_fd;
+    pthread_create(&p, NULL,
+                   acceptNewJobsLoop, (void*)args);
+    cout << "accepting new jobs on port: " << port << endl;
 
 }
 

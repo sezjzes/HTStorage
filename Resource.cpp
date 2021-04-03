@@ -41,7 +41,6 @@ void Resource::advertiseToManager(char* managerIp, int port) {
 
     for(int i = 0; i < sol; i++){
         rl[i].pingTime = p.ping(rl[i].ip);
-        cout<<rl[i].pingTime<<endl;
     }
     write(soc_fd, (char*) rl, sol * sizeof(resourceListEntry));
 }

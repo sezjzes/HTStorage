@@ -10,12 +10,9 @@
 class Job {
 private:
     SharedFiles shared_files;
-    int sub_jobs_left_to_run;
-    int total_number_of_sub_jobs;
-    double percent_completed;
-    double current_runtime;
-    double max_runtime;
-    int required_storage;
+    string PathToLocalFile;
+    char binaryIp[15];
+    int binaryPort;
     int required_compute;
 public:
     //client
@@ -25,7 +22,7 @@ public:
      * @param files associated files object
      * @param code code to be run (may not be best as a char* unsure what to do)
      */
-    Job(SharedFiles files, string path_to_code);
+    Job(SharedFiles files, string path_to_code, int compute);
     Job();
     ~Job();
     /**
@@ -34,11 +31,9 @@ public:
     void AllowPullJob();
     //manager
 
-    /**
-     * get the estimated time of the job
-     * @return the estimated time in ms of the job
-     */
-    int GetTime();
+    int getRequiredStorage();
+
+    int getRequiredCompute();
     //execution
     /**
      * run the job on the server
@@ -47,8 +42,9 @@ public:
 
     /**
      * get this job's info from client
+     * @path where to put job
      */
-    void PullJob();
+    void PullJob(string path);
 
     /**
      * get the attached Shared_files object
@@ -59,17 +55,20 @@ public:
     /**
      * create a serialized object for sending over the network
      */
-    char* SerializeSelf();
+    int SerializeSelf(char *buff);
     /**
      * create a files object to add files to from a serialized object that was sent over the network
      */
     Job(char* serializedVersion);
 
-    int getRequiredStorage();
 
-    int getRequiredCompute();
-
-
+};
+struct __attribute__((__packed__)) serializedJob{
+    int packageSize;
+    char binaryIp[15];
+    int binaryPort;
+    int required_compute;
+    SharedFiles::serialized sf;
 };
 
 

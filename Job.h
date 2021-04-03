@@ -9,7 +9,6 @@
 
 class Job {
 private:
-    ofstream code;
     SharedFiles shared_files;
     int sub_jobs_left_to_run;
     int total_number_of_sub_jobs;
@@ -26,15 +25,9 @@ public:
      * @param files associated files object
      * @param code code to be run (may not be best as a char* unsure what to do)
      */
-    Job(SharedFiles files, ofstream code);
+    Job(SharedFiles files, string path_to_code);
+    Job();
     ~Job();
-
-    // Update the current runtime of the job.
-    void UpdateRuntime(double completed_partial_job_runtime);
-
-    void UpdatePercentCompleted();
-
-    void UpdateNumberOfRemainingJobs();
     /**
      * set up a way for job to be requested by storage
      */

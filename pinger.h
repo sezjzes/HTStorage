@@ -15,6 +15,9 @@ public:
  * @return round trip time
  */
 int ping(char * ip);
+
+char* getLocalIp();
+
 };
 
 

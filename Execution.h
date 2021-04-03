@@ -3,18 +3,29 @@
 #include <fstream>
 #include "Job.h"
 #include "ResourceAd.h"
+#include "Resource.h"
 using namespace std;
 
 
-class Execution {
+class Execution: public Resource{
  private:
     Job job;
-    fstream  input_file;
-    fstream output_file;
-    ResourceAd resource_ad;
+    char localIp[15];
+    int localPort;
+
  public:
     Execution();
     ~Execution();
+    void allowRecieveJob();
+    void createResourceAd(int compute);
+    void executeJobs();
+
+
+
+
+
+
+
     void runJob();
     void getStorage();
     void read();

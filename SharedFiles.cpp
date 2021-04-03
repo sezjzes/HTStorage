@@ -16,8 +16,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "pinger.h"
-
-#include <stdio.h>
 #include <unistd.h>
 #include <sys/poll.h>
 
@@ -677,6 +675,8 @@ int SharedFiles::getSyncfd() const {
 void SharedFiles::addLocation(Location l){
     locations.push_back(l);
 }
+
+SharedFiles::SharedFiles() {}
 
 
 SharedFiles::~SharedFiles() = default;

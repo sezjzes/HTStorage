@@ -45,7 +45,7 @@ public:
      * create a files object to add files to from the client
      */
     SharedFiles(string pathToSharedFiles, int writeSize);
-
+    SharedFiles();
     ~SharedFiles();
     /**
      * add a file to the file structure
@@ -160,7 +160,7 @@ public:
     int openFileWriteOnly(string fileName);
 
     //network
-    __attribute__((__packed__)) struct serializedLocation{
+    struct __attribute__((__packed__))  serializedLocation{
         char ip[15];
         bool isClient;
         int readPort; //(network order)
@@ -169,13 +169,13 @@ public:
         int writeOutPort; //(network order)
     };
 
-    __attribute__((__packed__)) struct serializedLocationList{
+    struct __attribute__((__packed__)) serializedLocationList{
         int packageSize; //(network order)
         int numLocations; //(network order)
         serializedLocation locations[10];
     };
 
-    __attribute__((__packed__)) struct serialized {
+    struct __attribute__((__packed__))  serialized {
         int packageSize; //(network order)
         int size; //(network order)
         int syncPort; //(network order) 0 if none

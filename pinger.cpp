@@ -83,3 +83,15 @@ int pinger::ping(char * ip){
     return  triptime;
 }
 
+char *pinger::getLocalIp() {
+    //todo: make this not local host
+    char host[256];
+    char *ip;
+    struct hostent *host_entry;
+    int hostname;
+    hostname = gethostname(host, sizeof(host)); //find the host name
+    host_entry = gethostbyname(host); //find host information
+    ip = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0]));
+    return ip;
+}
+

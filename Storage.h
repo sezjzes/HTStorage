@@ -4,21 +4,29 @@
 #include <set>
 #include "SharedFiles.h"
 #include "ResourceAd.h"
+#include "Resource.h"
 using namespace std;
 
 
-class Storage {
+class Storage: public Resource {
 private:
-    SharedFiles shared_files;
-    ResourceAd resource_ad;
+    char localIp[15];
+    char localPort;
 public:
-    File getFile(std::string file_name);
+     void allowRecieveStorage();
+     void createResourceAd(int space);
+
+
+
+
+
+
     bool checkIfHasFile(std::string file_name);
     void pullInFiles(SharedFiles & shared_files);
     void exportOutputFiles();
     int getSizeOfSharedFiles();
     int getAvailableCapacity();
     int getMaximumCapacity();
-}
+};
 
 #endif //HTSTORAGE_STORAGE_H

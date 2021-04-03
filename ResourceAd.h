@@ -15,7 +15,14 @@ private:
     int available_compute;
     int total_storage;
     int total_compute;
+    char ip[15];
+    int port;
+
 public:
+    static const int resourceAdSize = 59;
+    ResourceAd();
+    ResourceAd(int resource_id, string resource_ad_type, int available_storage, int available_compute,
+               int total_storage, int total_compute, char ip[15], int port);
     int getResourceID();
     void setResourceID(int resource_id);
     string getResourceAdType();
@@ -27,6 +34,25 @@ public:
     int getTotalStorage();
     void setTotalStorage(int total_storage);
     int getTotalCompute();
+    void setIp(char* ip);
+    const char *getIp() const;
+    int getPort() const;
+    void setPort(int port);
+
     void setTotalCompute(int total_compute);
+    void serializeSelf(char* buff);
+    ResourceAd(char* buff);
+
+};
+
+struct serializedResourceAd{
+    int resource_id;
+    char resource_ad_type[20];
+    int available_storage;
+    int available_compute;
+    int total_storage;
+    int total_compute;
+    char ip[15];
+    int port;
 };
 #endif //HTSTORAGE_RESOURCE_AD_H

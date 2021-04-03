@@ -9,13 +9,28 @@
 #include "Execution.h"
 #include "ResourceAd.h"
 using namespace std;
-
 class Manager {
 public:
     queue<Job> job_queue;
-    unordered_map<int, unordered_map<string, map<float, unordered_set<int>>>> closest_resources;
+    unordered_map<int, unordered_map<string, map<int, unordered_set<int>>>> closest_resources;
     unordered_map<int, ResourceAd> resource_map;
+    int nextId = 0;
     // TODO: Create an unordered map to the ip address and port of each resource.
+
+
+    void acceptNewResourceAds();
+
+    void acceptNewJobs();
+
+    void assignJobs();
+
+    void processIncomingResourceAd(int socFd);
+
+
+
+
+
+
     queue<Job> getQueue();
     void addToQueue(Job job);
     Job getNextJob();
@@ -29,10 +44,23 @@ public:
     // MAYBE match storage and compute at the same time to find optimal balance.  Can run the searches 1 and 2 and find the best overlap.
     vector<int> MatchJobToResources4(Job job);
 
+
     // Pings the Resources for updates on their available resources.
     void getResourceAdUpdates();
     // Updates the resource_map's current ResourceAd for the specific resource.
     void updateResourceAd(ResourceAd);
+};
+
+
+struct argumentsManager{
+    int soc;
+    Manager *m;
+};
+
+struct __attribute__((__packed__))  resourceListEntry {
+    int resourceId;
+    char ip[15];
+    int pingTime;
 };
 
 #endif //HTSTORAGE_MANAGER_H

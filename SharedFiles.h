@@ -18,6 +18,7 @@ struct Location{
     int writePort;
     int pullInPort;
     int writeOutPort;
+    int completePort;
     int ping;
 };
 
@@ -27,12 +28,15 @@ struct Location{
 class SharedFiles {
 private:
     //where the files are hosted
-    string localPath;
     int size;
-    list<Location> locations;
     int syncPort;
     int syncfd;
 public:
+
+    list<Location> locations;
+    string localPath;
+    bool isClient;
+    bool complete;
     int getSyncfd() const;
 
 private:
@@ -159,6 +163,9 @@ public:
      */
     int openFileWriteOnly(string fileName);
 
+    int allowComplete();
+    void sendComplete();
+
     //network
     struct __attribute__((__packed__))  serializedLocation{
         char ip[15];
@@ -167,6 +174,7 @@ public:
         int writePort; //(network order)
         int pullInPort; //(network order)
         int writeOutPort; //(network order)
+        int completePort; //(network order)
     };
 
     struct __attribute__((__packed__)) serializedLocationList{

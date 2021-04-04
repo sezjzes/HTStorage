@@ -22,7 +22,7 @@ public:
      * @param files associated files object
      * @param code code to be run (may not be best as a char* unsure what to do)
      */
-    Job(SharedFiles files, string path_to_code, int compute);
+    Job(string files, int storage, string path_to_code, int compute);
     Job();
     ~Job();
     /**
@@ -49,7 +49,7 @@ public:
     /**
      * get the attached Shared_files object
      */
-    SharedFiles GetStorage();
+    SharedFiles & GetStorage();
 
     //network
     /**

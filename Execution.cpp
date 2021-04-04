@@ -95,6 +95,8 @@ void Execution::executeJobs() {
         }
         Job j = job_queue.front();
         job_queue.pop();
+        j.GetStorage().connectToSyncLocations();
         j.Run();
+        j.GetStorage().sendComplete();
     }
 }

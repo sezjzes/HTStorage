@@ -39,7 +39,6 @@ vector<int> Manager::MatchJobToResources1(Job job) {
     int required_compute = job.getRequiredCompute();
     int required_storage = job.getRequiredStorage();
     vector<int> resource_vector;
-
     // Finds the available compute and adds it to the resource_vector as the first element.
     for (auto i = resource_map.begin(); i != resource_map.end(); ++i) {
         int available_compute = i->second.getAvailableCompute();
@@ -50,7 +49,6 @@ vector<int> Manager::MatchJobToResources1(Job job) {
     }
     // Finds a primary storage node and a backup storage node. Adds them to the resource_vector.
     map<int, unordered_set<int>> temp_closest_resources = closest_resources[resource_vector.at(0)]["storage"];
-
     for (auto i = temp_closest_resources.begin(); i != temp_closest_resources.end(); ++i) {
         if (resource_vector.size() >= 3) {
             break;
@@ -74,7 +72,6 @@ vector<int> Manager::MatchJobToResources2(Job job) {
     int required_storage = job.getRequiredStorage();
     int required_compute = job.getRequiredCompute();
     vector<int> resource_vector;
-
     // Finds the available primary storage and adds it to the resource_vector as the first element.
     for (auto i = resource_map.begin(); i != resource_map.end(); ++i) {
         int available_storage = i->second.getAvailableStorage();
@@ -83,7 +80,6 @@ vector<int> Manager::MatchJobToResources2(Job job) {
 	    break;
         }
     }
-
     // Finds a backup storage node and adds it to the resource_vector.
     map<int, unordered_set<int>> temp_closest_resources = closest_resources[resource_vector.at(0)]["storage"];
     for (auto i = temp_closest_resources.begin(); i != temp_closest_resources.end(); ++i) {
@@ -100,7 +96,6 @@ vector<int> Manager::MatchJobToResources2(Job job) {
             }
         }
     }
-
     // Finds the closest Execution node near the primary Storage node and adds
     // it to the front of the resource_vector.
     map<int, unordered_set<int>> closest_compute = closest_resources[resource_vector.at(0)]["compute"];
@@ -177,7 +172,7 @@ void Manager::processIncomingResourceAd(int socFd){
 
 static void* acceptNewResourceAdsLoop(void * args) {
     argumentsManager *arg = (argumentsManager *) args;
-    Manager *m = arg->m;
+    Manager &m = *arg->m;
     int soc_fd, server_fd;
     server_fd = arg->soc;
     struct sockaddr address;
@@ -191,7 +186,7 @@ static void* acceptNewResourceAdsLoop(void * args) {
             break;
         }
 
-        m->processIncomingResourceAd(soc_fd);
+        m.processIncomingResourceAd(soc_fd);
     }
 }
 
@@ -222,11 +217,12 @@ void Manager::acceptNewResourceAds() {
     pthread_create(&p, NULL,
                    acceptNewResourceAdsLoop, (void*)args);
     cout << "accepting new resources on port: " << port << endl;
+
 }
 
 static void* acceptNewJobsLoop(void * args) {
     argumentsManager *arg = (argumentsManager *) args;
-    Manager *m = arg->m;
+    Manager &m = *arg->m;
     int soc_fd, server_fd;
     server_fd = arg->soc;
     struct sockaddr address;
@@ -242,7 +238,7 @@ static void* acceptNewJobsLoop(void * args) {
         serializedJob j;
         read(soc_fd, (char*)&j, 4);
         read(soc_fd, (char*)&j+4, ntohl(j.packageSize));
-        m->addToQueue(Job((char *) &j));
+        m.addToQueue(Job((char *) &j));
     }
 }
 
@@ -271,6 +267,7 @@ void Manager::acceptNewJobs() {
     pthread_create(&p, NULL,
                    acceptNewJobsLoop, (void*)args);
     cout << "accepting new jobs on port: " << port << endl;
+
 
 }
 void Manager::sendJobToCompute(Job j, ResourceAd c){
@@ -310,12 +307,16 @@ void Manager::assignJobs() {
             continue;
         }
         Job j = getNextJob();
+
         vector<int> r = MatchJobToResources1(j);
-        ResourceAd s1 = resource_map[r[1]];
+        while (r.size() < 3){
+            vector<int> r = MatchJobToResources1(j);
+        }
+        ResourceAd &s1 = resource_map[r[1]];
         sendStorageToStorage(j, s1);
-        ResourceAd s2 = resource_map[r[2]];
+        ResourceAd &s2 = resource_map[r[2]];
         sendStorageToStorage(j, s2);
-        ResourceAd c = resource_map[r[0]];
+        ResourceAd &c = resource_map[r[0]];
         sendJobToCompute(j, c);
     }
 }

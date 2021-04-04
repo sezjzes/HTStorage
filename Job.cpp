@@ -21,8 +21,7 @@
 #include <sys/poll.h>
 #include <map>
 
-Job::Job(SharedFiles files, string path_to_code, int compute) {
-    shared_files = files;
+Job::Job(string files, int writeSize, string path_to_code, int compute) : shared_files(files, writeSize) {
     PathToLocalFile = path_to_code;
     required_compute = compute;
 }
@@ -101,6 +100,7 @@ void Job::AllowPullJob() {
     args->soc = server_fd;
     args->localPath = PathToLocalFile;
     pthread_create(&p, NULL, acceptingForAllowPullJob, (void*) args);
+
 }
 
 void Job::PullJob(string path) {
@@ -127,7 +127,7 @@ void Job::PullJob(string path) {
     close(soc_fd);
 }
 
-SharedFiles Job::GetStorage() {
+SharedFiles & Job::GetStorage() {
     return shared_files;
 }
 
@@ -136,7 +136,6 @@ void Job::Run() {
     char * line = NULL;
     size_t len = 0;
     ssize_t r;
-
     fp = fopen((char*) &PathToLocalFile[0], "r");
 
     map<string, int> files = map<string, int>();
@@ -185,7 +184,6 @@ int Job::SerializeSelf(char *buff) {
     s->binaryPort = htonl(binaryPort);
     strncpy(s->binaryIp, binaryIp,15);
     ps += shared_files.serializeSelf((char *) &s->sf);
-    cout<<ntohl(s->sf.locationList.numLocations)<<endl;
     s->packageSize = htonl(ps);
     return ps + 4;
 }
@@ -195,7 +193,5 @@ Job::Job(char *serializedVersion) {
     required_compute = ntohl(s->required_compute);
     binaryPort = ntohl(s->binaryPort);
     strncpy(binaryIp, s->binaryIp,15);
-    cout<<binaryPort<<endl;
-    cout<<ntohl(s->sf.locationList.numLocations)<<endl;
     shared_files = SharedFiles((char*)&s->sf);
 }

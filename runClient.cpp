@@ -19,6 +19,5 @@ int main() {
     timersub( &tv, &tp, &tt);
     int triptime = tt.tv_sec*1000000+(tt.tv_usec);
     std::cout<<triptime/1000000.0<<std::endl;
-    while (true);
 
 }

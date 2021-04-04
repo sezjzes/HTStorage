@@ -26,9 +26,7 @@
 #include <unistd.h>
 
 
-Client::Client(string binary, int compute, string files, int writeSize) {
-    SharedFiles sf = SharedFiles(files, writeSize);
-    j = Job(sf, binary, compute);
+Client::Client(string binary, int compute, string files, int writeSize) : j(files, writeSize, binary, compute){
     j.AllowPullJob();
 }
 
@@ -46,6 +44,6 @@ void Client::sendJobToManger(char *ip, int port) {
 }
 
 void Client::waitForComplete() {
-
+    while(!j.GetStorage().complete){}
 }
 

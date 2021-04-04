@@ -36,7 +36,7 @@ static void* acceptNewStoragesLoop(void * args) {
         SharedFiles::serialized j;
         read(soc_fd, (char*)&j, 4);
         read(soc_fd, (char*)&j+4, ntohl(j.packageSize));
-        SharedFiles sf = SharedFiles((char *) &j);
+        SharedFiles & sf = *new SharedFiles((char *) &j);
         string dir = s->storageDir + "/" + to_string(s->folderNum++);
         mkdir(&dir[0], 0777);
         sf.setLocalPath(dir);
@@ -73,6 +73,7 @@ void Storage::allowRecieveStorage() {
     args->soc = server_fd;
     pthread_create(&p, NULL,
                    acceptNewStoragesLoop, (void*)args);
+
     localPort = port;
 }
 

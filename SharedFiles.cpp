@@ -36,6 +36,9 @@ SharedFiles::SharedFiles(string pathToSharedFiles, int writeSize) {
     }
     handelSyncLocations();
     beginSharingFiles(true);
+
+    isClient = true;
+    complete = false;
 }
 
 
@@ -46,7 +49,11 @@ void SharedFiles::beginSharingFiles(bool isClient) {
     local.writePort = allowWrite();
     local.pullInPort = allowPullInFiles();
     local.writeOutPort = allowWriteOutFiles();
-    local.isClient = true;
+    local.completePort = allowComplete();
+    local.isClient = isClient;
+    if(!isClient){
+        connectToSyncLocations();
+    }
     sendNewLocation(local);
     locations.push_back(local);
     //todo: share locations to other copies of the server
@@ -233,6 +240,7 @@ int SharedFiles::openFileReadOnly(string fileName) {
             break;
         }
     }
+
     write(soc_fd, &fileName[0], fileName.length() + 1);
     return soc_fd;
 }
@@ -486,6 +494,97 @@ void SharedFiles::writeOutFiles() {
     }
     close(soc_fd);
 }
+static void* acceptComplete(void* args){
+    int soc_fd, server_fd;
+    arguments* arg = (arguments*)args;
+    server_fd = arg->soc;
+    string path = arg->localPath;
+    struct sockaddr address;
+    SharedFiles &sf = *arg->sf;
+    int addrlen = sizeof(address);
+
+    soc_fd = accept(server_fd, &address,
+                    (socklen_t *) &addrlen);
+    cout<<"close"<<endl;
+    if(!sf.isClient) {
+        sf.writeOutFiles();
+        std::__fs::filesystem::remove_all(sf.localPath);
+    }
+    sf.complete = true;
+    write(soc_fd, "c", 1);
+    cout<<"closed"<<endl;
+    close(soc_fd);
+
+}
+
+int SharedFiles::allowComplete() {
+    int server_fd;
+    int port;
+    int opt = 1;
+    struct sockaddr_in address;
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR,
+               &opt, sizeof(opt));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    for (port = 8080; true; ++port) {
+        address.sin_port = htons(port);
+        if (::bind(server_fd, (struct sockaddr *) &address, (socklen_t)sizeof(address)) == 0){
+            break;
+        }
+    }
+    listen(server_fd, 3);
+    pthread_t p;
+    arguments* args = new arguments;
+    args->soc = server_fd;
+    args->localPath = localPath;
+    args->sf = this;
+    pthread_create(&p, NULL,
+                   acceptComplete, (void*) args);
+    return port;
+}
+
+void SharedFiles::sendComplete() {
+    complete = true;
+    struct sockaddr_in serv_addr;
+    serv_addr.sin_family = AF_INET;
+    for(Location l: locations){
+        int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
+        if(l.isClient){
+            continue;
+        }
+        cout<<"close" << l.completePort <<endl;
+        serv_addr.sin_port = htons(l.completePort);
+        inet_pton(AF_INET, l.ip, &serv_addr.sin_addr);
+        if (connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)))
+        {
+            perror("hi");
+            continue;
+        }
+        cout<<"closed"<<endl;
+        char c;
+        read(soc_fd, &c, 1);
+        close(soc_fd);
+    }
+    for(Location l: locations){
+        int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
+        if(!l.isClient){
+            continue;
+        }
+        cout<<"end"<<endl;
+        serv_addr.sin_port = htons(l.completePort);
+        inet_pton(AF_INET, l.ip, &serv_addr.sin_addr);
+        if (connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)))
+        {
+            perror("hi");
+            continue;
+        }
+        cout<<"ended"<<endl;
+        char c;
+        read(soc_fd, &c, 1);
+
+    }
+}
 
 int SharedFiles::getSize() {
     return size;
@@ -505,8 +604,8 @@ int SharedFiles::serializeSelf(char *buff) {
 int SharedFiles::serializeLocationList(char *buff) {
     serializedLocationList * sll = (serializedLocationList *)buff;
     int ps = 4;
+
     sll->numLocations = htonl(locations.size());
-    cout<<ntohl(sll->numLocations)<<endl;
     int i = 0;
     for(Location l: locations){
         ps += serializeLocation((char *) &sll->locations[i], l);
@@ -524,7 +623,8 @@ int SharedFiles::serializeLocation(char *buff, Location l) {
     sl->writeOutPort = htonl(l.writeOutPort);
     sl->writePort = htonl(l.writePort);
     sl->readPort = htonl(l.readPort);
-    return 32;
+    sl->completePort = htonl(l.completePort);
+    return 36;
 }
 
 Location SharedFiles::unserializeLocation(serializedLocation *sl) {
@@ -535,14 +635,18 @@ Location SharedFiles::unserializeLocation(serializedLocation *sl) {
     l.writeOutPort = ntohl(sl->writeOutPort);
     l.writePort = ntohl(sl->writePort);
     l.readPort = ntohl(sl->readPort);
+    l.completePort = ntohl(sl->completePort);
     return l;
 }
 
 void SharedFiles::unserializeLocationList(serializedLocationList * sll) {
     locations.clear();
+
     for(int i = 0; i < ntohl(sll->numLocations); i++){
+
         locations.push_back(unserializeLocation(&sll->locations[i]));
     }
+
     sortLocations();
 }
 
@@ -552,6 +656,9 @@ SharedFiles::SharedFiles(char *serializedVersion) {
     syncPort = ntohl(s->syncPort);
     strncpy(syncIP, s->syncIp,15);
     unserializeLocationList(&s->locationList);
+
+    isClient = false;
+    complete = false;
 }
 
 static bool compare_locations (const Location& first, const Location& second)
@@ -573,16 +680,16 @@ void SharedFiles::sortLocations() {
     server_fd = arg->soc;
     string path = arg->localPath;
     struct sockaddr address;
-    SharedFiles * sf = arg->sf;
+    SharedFiles &sf = *arg->sf;
     int addrlen = sizeof(address);
     struct pollfd fds[10];
     int numfds = 1;
     fds[0].fd = server_fd;
     fds[0].events = POLLIN;
-
+    fds[0].revents = 0;
     while (true){
         bool updated = false;
-        poll(fds, numfds, 0);
+        poll(fds, numfds, -1);
         if(fds[0].revents & POLLIN ) {
             updated = true;
             soc_fd = accept(server_fd, &address,
@@ -592,22 +699,27 @@ void SharedFiles::sortLocations() {
             }
             fds[numfds].fd = soc_fd;
             fds[numfds].events = POLLIN;
+            fds[numfds].revents = 0;
+            numfds++;
         }
         for(int i = 1; i < numfds; i++){
             if(fds[i].revents & POLLIN ){
                 updated = true;
-                SharedFiles::serializedLocation *sl;
-                read(fds[i].fd, (char*)sl, 32);
-                Location l = sf->unserializeLocation(sl);
-                sf->addLocation(l);
+
+                SharedFiles::serializedLocation sl;
+                read(fds[i].fd, (char*)&sl, 36);
+                Location l = sf.unserializeLocation(&sl);
+                sf.addLocation(l);
             }
+            fds[i].revents = 0;
         }
         if(updated){
             for(int i = 1; i < numfds; i++) {
                 char buff[2048];
-                write(fds[i].fd, buff, sf->serializeLocationList(buff));
+                write(fds[i].fd, buff, sf.serializeLocationList(buff));
             }
         }
+
     }
 }
 
@@ -640,14 +752,14 @@ void SharedFiles::handelSyncLocations() {
 }
 
 static void* recvUpdates(void* self){
-    SharedFiles * sf = (SharedFiles *) self;
-    SharedFiles::serializedLocationList *sll;
+    SharedFiles &sf = *((SharedFiles *) self);
+    SharedFiles::serializedLocationList sll;
     while (true){
-        int r = read(sf->getSyncfd(), (void *) sll, 4);
+        int r = read(sf.getSyncfd(), (void *) &sll, 4);
         if (r == 0){break;}
-        r = read(sf->getSyncfd(), (void *) &(sll->numLocations), sll->packageSize);
+        r = read(sf.getSyncfd(), (void *) &(sll.numLocations), ntohl(sll.packageSize));
         if (r == 0){break;}
-        sf->unserializeLocationList(sll);
+        sf.unserializeLocationList(&sll);
     }
 }
 
@@ -657,7 +769,7 @@ void SharedFiles::connectToSyncLocations() {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(syncPort);
     inet_pton(AF_INET, syncIP, &serv_addr.sin_addr);
-    connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+    while(connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)));
     syncfd = soc_fd;
     pthread_t p;
     pthread_create(&p, NULL,
@@ -678,7 +790,8 @@ void SharedFiles::addLocation(Location l){
     locations.push_back(l);
 }
 
-SharedFiles::SharedFiles() {}
+SharedFiles::SharedFiles() {localPath = "no";}
 
 
-SharedFiles::~SharedFiles() = default;
+
+SharedFiles::~SharedFiles() { }

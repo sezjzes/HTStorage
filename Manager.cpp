@@ -116,6 +116,25 @@ vector<int> Manager::MatchJobToResources2(Job job) {
 }
 
 
+// Matching them at the same time without regards to location.
+vector<int> Manager::MatchJobToResources3(Job job) {
+    int required_compute = job.getRequiredCompute();
+    int required_storage = job.getRequiredStorage();
+    vector<int> resource_vector;
+    // Finds the available compute and adds it to the resource_vector as the first element.
+    for (auto i = resource_map.begin(); i != resource_map.end(); ++i) {
+        int available_compute = i->second.getAvailableCompute();
+        int available_storage = i->second.getAvailableStorage();
+        if (required_compute > 0 && available_compute >= required_compute) {
+            resource_vector.push_back(i->second.getResourceID());
+        }
+        // TODO: Finish this part of the algorithm.
+        if (required_storage > 0 && available_storage >= required_storage) {
+            resource_vector.push_back(i->second.getResourceID());
+        }
+    }
+}
+
 
 void Manager::processIncomingResourceAd(int socFd){
     char buff[resourceAdSize];
@@ -320,4 +339,3 @@ void Manager::assignJobs() {
         sendJobToCompute(j, c);
     }
 }
-

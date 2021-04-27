@@ -64,7 +64,6 @@ vector<int> Manager::MatchJobToResources1(Job job) {
         }
     }
     return resource_vector;
-
 }
 
 // Matching storage first then closest compute.
@@ -123,18 +122,57 @@ vector<int> Manager::MatchJobToResources3(Job job) {
     vector<int> resource_vector;
     // Finds the available compute and adds it to the resource_vector as the first element.
     for (auto i = resource_map.begin(); i != resource_map.end(); ++i) {
+        if (resource_vector.size() >= 3) {
+            return resource_vector;
+        }
         int available_compute = i->second.getAvailableCompute();
         int available_storage = i->second.getAvailableStorage();
         if (required_compute > 0 && available_compute >= required_compute) {
-            resource_vector.push_back(i->second.getResourceID());
+            resource_vector.emplace(resource_vector.begin(), i->second.getResourceID());
         }
-        // TODO: Finish this part of the algorithm.
         if (required_storage > 0 && available_storage >= required_storage) {
             resource_vector.push_back(i->second.getResourceID());
         }
     }
+    return resource_vector;
 }
 
+// Compares the outputs of Algorithms 1 and 2 and selects the optimal output
+// between the two available options.
+vector<int> Manager::MatchJobToResources4(Job job) {
+    vector<int> algorithm_1_resources = MatchJobToResources1(job);
+    vector<int> algorithm_2_resources = MatchJobToResources2(job);
+    if (algorithm_1_resources.size() < 2) {
+        return algorithm_2_resources;
+    } else if (algorithm_2_resources.size() < 2) {
+        return algorithm_1_resources;
+    } else {
+        int ping_time_1 = getPingTime(algorithm_1_resources.at(0), algorithm_1_resources.at(1));
+        int ping_time_2 = getPingTime(algorithm_2_resources.at(0), algorithm_2_resources.at(1));
+        if (ping_time_1 < ping_time_2) {
+            return algorithm_1_resources;
+        } else if (ping_time_2 < ping_time_1) {
+            return algorithm_2_resources;
+        } else {
+            return algorithm_1_resources;
+        }
+    }
+}
+
+
+int Manager::getPingTime(int compute_resource, int storage_resource) {
+    map<int, unordered_set<int>> temp_closest_resources = closest_resources[compute_resource]["storage"];
+    for (auto i = temp_closest_resources.begin(); i != temp_closest_resources.end(); ++i) {
+        unordered_set<int>::const_iterator found = i->second.find(storage_resource);
+        if (found == i->second.end()) {
+            continue;
+        } else {
+            return *found;
+        }
+    }
+    // Return an arbitrary high number when the ping time is not found.
+    return 1000000;
+}
 
 void Manager::processIncomingResourceAd(int socFd){
     char buff[resourceAdSize];

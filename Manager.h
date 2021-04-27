@@ -17,6 +17,7 @@ public:
     int nextId = 0;
     // TODO: Create an unordered map to the ip address and port of each resource.
 
+    int getPingTime(int compute_resource, int storage_resource);
 
     void acceptNewResourceAds();
 

@@ -19,6 +19,7 @@
 #include "pinger.h"
 #include <unistd.h>
 #include <sys/poll.h>
+#include <cstring>
 #include <map>
 
 Job::Job(string files, int writeSize, string path_to_code, int compute) : shared_files(files, writeSize) {

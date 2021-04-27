@@ -17,6 +17,7 @@
 #include <arpa/inet.h>
 #include "pinger.h"
 #include <unistd.h>
+#include <cstring>
 #include <sys/poll.h>
 
 namespace fs = std::__fs::filesystem;

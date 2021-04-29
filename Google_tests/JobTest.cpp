@@ -16,7 +16,7 @@ TEST(TestJob, allowPullJobAndPullJob){
     SharedFiles sf;
     Job j = Job(sf, 0, "/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/testfile.txt", 2048);
     j.AllowPullJob();
-    std::__fs::filesystem::remove_all("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1");
+    std::filesystem::remove_all("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1");
     mkdir("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1", 0777);
     j.PullJob("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1/testfile.txt");
     sleep(1);

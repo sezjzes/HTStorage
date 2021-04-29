@@ -21,6 +21,7 @@
 #include <sys/poll.h>
 #include <cstring>
 #include <map>
+#include <pthread.h>
 
 Job::Job(string files, int writeSize, string path_to_code, int compute) : shared_files(files, writeSize) {
     PathToLocalFile = path_to_code;

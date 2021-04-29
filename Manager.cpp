@@ -18,6 +18,7 @@
 #include <arpa/inet.h>
 #include "pinger.h"
 #include <unistd.h>
+#include <cstring>
 
 queue<Job> Manager::getQueue() {
     return job_queue;

@@ -19,8 +19,9 @@
 #include <unistd.h>
 #include <cstring>
 #include <sys/poll.h>
+#include <pthread.h>
 
-namespace fs = std::__fs::filesystem;
+namespace fs = std::filesystem;
 
 #include <utility>
 using namespace std;
@@ -509,7 +510,7 @@ static void* acceptComplete(void* args){
     cout<<"close"<<endl;
     if(!sf.isClient) {
         sf.writeOutFiles();
-        std::__fs::filesystem::remove_all(sf.localPath);
+        fs::remove_all(sf.localPath);
     }
     sf.complete = true;
     write(soc_fd, "c", 1);

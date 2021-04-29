@@ -49,7 +49,7 @@ TEST(TestSharedFiles, allowPullInFilesAndPullInFiles){
     //todo: portablize this test
     SharedFiles sf = SharedFiles("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles", 2048);
     //sf.beginSharingFiles(false);
-    std::__fs::filesystem::remove_all("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1");
+    std::filesystem::remove_all("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1");
     mkdir("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1", 0777);
     sf.setLocalPath("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1");
     sf.pullInFiles();
@@ -65,7 +65,7 @@ TEST(TestSharedFiles, allowPullInFilesAndPullInFiles){
 TEST(TestSharedFiles, allowWriteOutFilesAndWriteOutFiles){
     //todo: portablize this test
     mkdir("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/2", 0777);
-    std::__fs::filesystem::remove_all("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/2");
+    std::filesystem::remove_all("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/2");
     mkdir("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/2", 0777);
     SharedFiles sf = SharedFiles("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/2", 2048);
     //sf.beginSharingFiles(false);
@@ -97,4 +97,3 @@ TEST(TestSharedFiles, testSync){
 //    SharedFiles rsf = SharedFiles(buff);
 //    ASSERT_EQ(sf.getSize(), rsf.getSize());
 //}
-

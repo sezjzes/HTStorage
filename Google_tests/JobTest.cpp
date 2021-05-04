@@ -14,13 +14,13 @@
 TEST(TestJob, allowPullJobAndPullJob){
     //todo: portablize this test
     SharedFiles sf;
-    Job j = Job(sf, 0, "/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/testfile.txt", 2048);
+    Job j = Job("/home/mlev/Projects/HTStorage/Google_tests/testfiles", 0, "/home/mlev/Projects/HTStorage/Google_tests/testfiles/testfile.txt", 2048);
     j.AllowPullJob();
-    std::filesystem::remove_all("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1");
-    mkdir("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1", 0777);
-    j.PullJob("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1/testfile.txt");
+    std::filesystem::remove_all("/home/mlev/Projects/HTStorage/Google_tests/testfiles/1");
+    mkdir("/home/mlev/Projects/HTStorage/Google_tests/testfiles/1", 0777);
+    j.PullJob("/home/mlev/Projects/HTStorage/Google_tests/testfiles/1/testfile.txt");
     sleep(1);
-    int fd2 = open("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/1/testfile.txt", O_RDONLY, NULL);
+    int fd2 = open("/home/mlev/Projects/HTStorage/Google_tests/testfiles/1/testfile.txt", O_RDONLY, NULL);
     ASSERT_GT(fd2, 0);
     char test123[8];
     test123[7] = 0;
@@ -29,7 +29,7 @@ TEST(TestJob, allowPullJobAndPullJob){
 }
 
 TEST(TestJob, runJob){
-    SharedFiles sf = SharedFiles("/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles", 2048);
-    Job j = Job(sf, 0, "/Users/joshszczesniak/Desktop/525/HTStorage/Google_tests/testfiles/simpleRun.txt", 2048);
+    SharedFiles sf = SharedFiles("/home/mlev/Projects/HTStorage/Google_tests/testfiles", 2048);
+    Job j = Job("/home/mlev/Projects/HTStorage/Google_tests/testfiles", 0, "/home/mlev/Projects/HTStorage/Google_tests/testfiles/simpleRun.txt", 2048);
     j.Run();
 }

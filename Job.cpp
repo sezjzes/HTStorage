@@ -22,6 +22,7 @@
 #include <cstring>
 #include <map>
 #include <pthread.h>
+using namespace std;
 
 Job::Job(string files, int writeSize, string path_to_code, int compute) : shared_files(files, writeSize) {
     PathToLocalFile = path_to_code;
@@ -139,6 +140,7 @@ void Job::Run() {
     size_t len = 0;
     ssize_t r;
     fp = fopen((char*) &PathToLocalFile[0], "r");
+    cout << "Job.cpp: Opened the binary file." << endl;
 
     map<string, int> files = map<string, int>();
     while ((r = getline(&line, &len, fp)) != -1) {
@@ -177,6 +179,7 @@ void Job::Run() {
     }
 
     fclose(fp);
+    cout << "Job.cpp: Finished the job." << endl;
 }
 
 int Job::SerializeSelf(char *buff) {

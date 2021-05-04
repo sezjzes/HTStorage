@@ -20,6 +20,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+using namespace std;
 
 unsigned short checksum(void *b, int len)
 {
@@ -61,7 +62,6 @@ int pinger::ping(char * ip){
         *datap++ = i;
     gettimeofday( tp, NULL);
 
-
     icp->icmp_cksum = checksum( icp, cc );
     sendto( s, outpack, cc, 0, &whereto, sizeof(struct sockaddr) );
     struct icmp * icp2;
@@ -69,6 +69,7 @@ int pinger::ping(char * ip){
     char packet[4096];
     size_t len = sizeof (packet);
     socklen_t fromlen = sizeof (from);
+
     while(true){
         recvfrom(s, (void *) packet, len, 0, &from, &fromlen);
         struct ip* ipp = (struct ip*) packet;
@@ -94,4 +95,3 @@ char *pinger::getLocalIp() {
     ip = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0]));
     return ip;
 }
-

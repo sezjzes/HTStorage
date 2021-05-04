@@ -94,9 +94,13 @@ void Execution::executeJobs() {
             continue;
         }
         Job j = job_queue.front();
+        cout << "Execution.cpp: Got the top Job." << endl;
         job_queue.pop();
         j.GetStorage().connectToSyncLocations();
+        cout << "Execution.cpp: Got relevant storage." << endl;
         j.Run();
+        cout << "Execution.cpp: Ran the job." << endl;
         j.GetStorage().sendComplete();
+        cout << "Execution.cpp: Sent the Job Complete message." << endl;
     }
 }

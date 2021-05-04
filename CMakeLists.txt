@@ -23,7 +23,7 @@ add_executable(Client runClient.cpp Client.h Client.cpp  ResourceAd.h ResourceAd
 
 add_executable(Local localRun.cpp)
 
-add_executable(NS-3SIMULATION runSimulation.cpp Manager.h Manager.cpp Execution.h Execution.cpp ResourceAd.h ResourceAd.cpp
+add_executable(NS-3SIMULATION runSimulation.cpp managerApp.cpp managerApp.h clientApp.cpp clientApp.h Manager.h Manager.cpp Execution.h Execution.cpp ResourceAd.h ResourceAd.cpp
         Job.h Job.cpp SharedFiles.h SharedFiles.cpp pinger.h pinger.cpp Resource.h Resource.cpp Client.h Client.cpp)
 
 target_link_libraries(NS-3SIMULATION
@@ -36,4 +36,6 @@ target_link_libraries(NS-3SIMULATION
         ns3.33-mobility-debug
 #        ns3.33-visualizer-debug
         ns3.33-applications-debug
-        ns3.33-point-to-point-debug)
+        ns3.33-point-to-point-debug
+        ns3.33-csma-debug
+        )

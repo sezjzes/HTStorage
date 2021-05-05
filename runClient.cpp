@@ -9,8 +9,8 @@ int main() {
     struct timeval tp;
     gettimeofday( &tp, NULL);
     Client c = Client(
-        "/home/mlev/Projects/HTStorage/tests/binaries/simpleRun.txt", 2,
-        "/home/mlev/Projects/HTStorage/tests/files", 7);
+        "/home/ubuntu/HTStorage/tests/binaries/simpleRun.txt", 2,
+        "/home/ubuntu/HTStorage/tests/files", 7);
     char* ip = "172.31.13.131";//"193.168.002.215";
     cout << "Client: Created the client at ip address " << ip << endl;
     c.sendJobToManger(ip, 8081);

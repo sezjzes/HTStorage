@@ -7,7 +7,7 @@
 using namespace std;
 
 int main() {
-    Execution e = Execution("/home/mlev/Projects/HTStorage/workingDir/execution");
+    Execution e = Execution("/home/ubuntu/HTStorage/workingDir/execution");
     cout << "Execution: Created the local Execution object." << endl;
     e.allowRecieveJob();
     e.createResourceAd(1024);

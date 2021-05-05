@@ -2,7 +2,7 @@ project(Google_tests)
 
 enable_testing()
 include(GoogleTest)
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16.3)
 # 'lib' is the folder with Google Test sources
 add_subdirectory(lib/googletest-master)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})

@@ -11,7 +11,7 @@ int main() {
     Client c = Client(
         "/home/mlev/Projects/HTStorage/tests/binaries/simpleRun.txt", 2,
         "/home/mlev/Projects/HTStorage/tests/files", 7);
-    char* ip = "127.0.1.1";//"193.168.002.215";
+    char* ip = "172.31.13.131";//"193.168.002.215";
     cout << "Client: Created the client at ip address " << ip << endl;
     c.sendJobToManger(ip, 8081);
     cout << "Client: Sent the job to the manager at port 8081." << endl;

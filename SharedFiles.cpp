@@ -705,7 +705,7 @@ void SharedFiles::sortLocations() {
     fds[0].fd = server_fd;
     fds[0].events = POLLIN;
     fds[0].revents = 0;
-    while (true){
+    while (!sf.complete){
         bool updated = false;
         poll(fds, numfds, -1);
         if(fds[0].revents & POLLIN ) {
@@ -738,6 +738,9 @@ void SharedFiles::sortLocations() {
             }
         }
 
+    }
+    for(int i = 1; i < numfds; i++){
+        close(fds[i].fd);
     }
 }
 

@@ -89,8 +89,10 @@ void Execution::createResourceAd(int compute) {
 }
 
 void Execution::executeJobs() {
+    cout << "Execution.cpp: Starting to execute the jobs." << endl;
     while (true){
         if(job_queue.size() < 1){
+            cout << "Execution.cpp: The job queue was empty." << endl;
             continue;
         }
         Job j = job_queue.front();

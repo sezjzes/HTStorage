@@ -101,6 +101,7 @@ void ResourceAd::setPort(int port) {
 }
 
 void ResourceAd::serializeSelf(char *buff) {
+    cout << "ResourceAd.cpp: Beginning to serialize the ResourceAd." << endl;
     serializedResourceAd * sr = (serializedResourceAd *) buff;
     sr->resource_id = htonl(resource_id);
     strcpy(sr->resource_ad_type, resource_ad_type.c_str());
@@ -123,8 +124,3 @@ ResourceAd::ResourceAd(char *buff) {
     strncpy(ip, sr->ip, 15);
     port = ntohl(sr->port);
 }
-
-
-
-
-

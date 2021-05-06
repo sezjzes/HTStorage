@@ -43,6 +43,7 @@ int Job::getRequiredCompute() {
 Job::Job() {}
 
 void sendFile(int soc_fd, string path){
+    cout << "Job.cpp: Starting to send the file." << endl;
     string filePath = path;
     int fd = open(&filePath[0], O_RDONLY, NULL);
     char buff[2048];
@@ -58,6 +59,7 @@ void sendFile(int soc_fd, string path){
     }
     close(fd);
     close(soc_fd);
+    cout << "Job.cpp:  Finished sending the file." << endl;
 
 }
 
@@ -107,6 +109,7 @@ void Job::AllowPullJob() {
 }
 
 void Job::PullJob(string path) {
+    cout << "Job.cpp: Starting to pull the job." << endl;
     PathToLocalFile = path;
     int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in serv_addr;
@@ -128,6 +131,7 @@ void Job::PullJob(string path) {
     }
     close(fd);
     close(soc_fd);
+    cout << "Job.cpp: Finished pulling the job." << endl;
 }
 
 SharedFiles & Job::GetStorage() {
@@ -183,6 +187,7 @@ void Job::Run() {
 }
 
 int Job::SerializeSelf(char *buff) {
+    cout << "Job.cpp: Starting to serialize the job." << endl;
     serializedJob * s = (serializedJob*)buff;
     int ps = 4+4+15;
     s->required_compute = htonl(required_compute);
@@ -190,6 +195,7 @@ int Job::SerializeSelf(char *buff) {
     strncpy(s->binaryIp, binaryIp,15);
     ps += shared_files.serializeSelf((char *) &s->sf);
     s->packageSize = htonl(ps);
+    cout << "Job.cpp:  The serialized version of the job is about to be returned." << endl;
     return ps + 4;
 }
 

@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "SharedFiles.h"
+using namespace std;
 
 static void* acceptNewStoragesLoop(void * args) {
     argumentsStorage *arg = (argumentsStorage *) args;
@@ -41,6 +42,7 @@ static void* acceptNewStoragesLoop(void * args) {
         mkdir(&dir[0], 0777);
         sf.setLocalPath(dir);
         sf.pullInFiles();
+        cout << "Storage.cpp: The SharedFiles object is pulling in the files locally." << endl;
         sf.beginSharingFiles(false);
     }
 }

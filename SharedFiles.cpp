@@ -45,6 +45,7 @@ SharedFiles::SharedFiles(string pathToSharedFiles, int writeSize) {
 
 
 void SharedFiles::beginSharingFiles(bool isClient) {
+    cout << "SharedFiles.cpp: Beginning to share files." << endl;
     Location local;
     strncpy(local.ip, getLocalIp(), 15);
     local.readPort = allowRead();
@@ -55,6 +56,7 @@ void SharedFiles::beginSharingFiles(bool isClient) {
     local.isClient = isClient;
     if(!isClient){
         connectToSyncLocations();
+        cout << "SharedFiles.cpp:  It is not a client, so connecting to the sync locations." << endl;
     }
     sendNewLocation(local);
     locations.push_back(local);
@@ -268,6 +270,7 @@ void SharedFiles::setLocalPath(string lp) {
 }
 
 void sendAllFiles(int soc_fd, string path){
+    cout << "SharedFiles.cpp: Starting to send out all the files." << endl;
     for (const auto & entry : fs::directory_iterator(path)) {
 
         if (entry.is_directory()){
@@ -295,6 +298,7 @@ void sendAllFiles(int soc_fd, string path){
         close(fd);
     }
     close(soc_fd);
+    cout << "SharedFiles.cpp: Finished sending out all of the files." << endl;
 }
 
 [[noreturn]] static void* acceptingForAllowPullInFilesHelper(void* args){
@@ -343,6 +347,7 @@ int SharedFiles::allowPullInFiles() {
 }
 
 void SharedFiles::pullInFiles() {
+    cout << "SharedFiles.cpp: Beginning to pull in files." << endl;
     int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
@@ -379,9 +384,11 @@ void SharedFiles::pullInFiles() {
         close(fd);
     }
     close(soc_fd);
+    cout << "SharedFiles.cpp: Finished pulling in all of the files." << endl;
 }
 
 void recvAllFiles(int soc_fd, string path){
+    cout << "SharedFiles.cpp: Beginning to receive all files." << endl;
     while(true){
         char buff[2048];
         char filename[2048] = {0};
@@ -407,6 +414,7 @@ void recvAllFiles(int soc_fd, string path){
         close(fd);
     }
     close(soc_fd);
+    cout << "SharedFiles.cpp: Finished receiving all files." << endl;
 }
 
 [[noreturn]] static void* acceptingForAllowWriteOutFilesHelper(void* args){
@@ -455,6 +463,7 @@ int SharedFiles::allowWriteOutFiles() {
 }
 
 void SharedFiles::writeOutFiles() {
+    cout << "SharedFiles.cpp: Beginning to write out the files." << endl;
     int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
@@ -495,8 +504,10 @@ void SharedFiles::writeOutFiles() {
         close(fd);
     }
     close(soc_fd);
+    cout << "SharedFiles.cpp:  Finished writing out the files." << endl;
 }
 static void* acceptComplete(void* args){
+    cout << "SharedFiles.cpp: Beginning to accept Complete." << endl;
     int soc_fd, server_fd;
     arguments* arg = (arguments*)args;
     server_fd = arg->soc;
@@ -509,14 +520,17 @@ static void* acceptComplete(void* args){
                     (socklen_t *) &addrlen);
     cout<<"close"<<endl;
     if(!sf.isClient) {
+        cout << "SharedFiles.cpp: The shared files object is not at a client." << endl;
         sf.writeOutFiles();
+        cout << "SharedFiles.cpp: The shared files have been written out." << endl;
         fs::remove_all(sf.localPath);
+        cout << "SharedFiles.cpp: The local version of the sharedfiles have been deleted." << endl;
     }
     sf.complete = true;
     write(soc_fd, "c", 1);
     cout<<"closed"<<endl;
     close(soc_fd);
-
+    cout << "SharedFiles.cpp: Finished accepting the Complete." << endl;
 }
 
 int SharedFiles::allowComplete() {
@@ -547,6 +561,7 @@ int SharedFiles::allowComplete() {
 }
 
 void SharedFiles::sendComplete() {
+    cout << "SharedFiles.cpp: Beginning to send out the Complete." << endl;
     complete = true;
     struct sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
@@ -586,6 +601,7 @@ void SharedFiles::sendComplete() {
         read(soc_fd, &c, 1);
 
     }
+    cout << "SharedFiles.cpp: Finished sending out the Complete." << endl;
 }
 
 int SharedFiles::getSize() {

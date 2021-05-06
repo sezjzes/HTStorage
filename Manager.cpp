@@ -19,6 +19,7 @@
 #include "pinger.h"
 #include <unistd.h>
 #include <cstring>
+using namespace std;
 
 queue<Job> Manager::getQueue() {
     return job_queue;
@@ -26,10 +27,12 @@ queue<Job> Manager::getQueue() {
 
 void Manager::addToQueue(Job job) {
     job_queue.push(job);
+    cout << "Manager.cpp: Added a job to the queue." << endl;
 }
 
 Job Manager::getNextJob() {
     Job f = job_queue.front();
+    cout << "Manager.cpp: Got the first job in the queue." << endl;
     job_queue.pop();
     return f;
 }
@@ -176,6 +179,7 @@ int Manager::getPingTime(int compute_resource, int storage_resource) {
 }
 
 void Manager::processIncomingResourceAd(int socFd){
+    cout << "Manager.cpp: Starting to process the incoming ResourceAd." << endl;
     char buff[resourceAdSize];
     read(socFd, buff, resourceAdSize);
     ResourceAd ra = ResourceAd(buff);
@@ -226,6 +230,7 @@ void Manager::processIncomingResourceAd(int socFd){
         //update resource
         resource_map[ra.getResourceID()] = ra;
     }
+    cout << "Manager.cpp:  Finished processing the incoming ResourceAd." << endl;
 }
 
 static void* acceptNewResourceAdsLoop(void * args) {
@@ -329,6 +334,7 @@ void Manager::acceptNewJobs() {
 
 }
 void Manager::sendJobToCompute(Job j, ResourceAd c){
+    cout << "Manager.cpp:  Starting to send the job to the Execution node." << endl;
     c.setAvailableCompute(c.getAvailableCompute() - j.getRequiredCompute());
     int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in serv_addr;

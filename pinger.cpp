@@ -40,10 +40,13 @@ unsigned short checksum(void *b, int len)
 }
 
 int pinger::ping(char * ip){
+    cout << "pinger.cpp: Starting to send out a ping." << endl;
     string command = "ping -c 1 ";
     command += *ip;
     command += " | head -n 2 | sed -n \'s/.*time=//p\' | sed -n \'s/.*[0-9]* ms//p\'";
-    return system(command.c_str());
+    int ping_time = system(command.c_str());
+    cout << "pinger.cpp: Received the ping time." << endl;
+    return ping_time;
     // struct sockaddr from;
     // struct protoent *proto;
     // struct sockaddr whereto;

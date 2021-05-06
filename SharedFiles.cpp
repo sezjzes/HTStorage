@@ -526,9 +526,8 @@ static void* acceptComplete(void* args){
         fs::remove_all(sf.localPath);
         cout << "SharedFiles.cpp: The local version of the sharedfiles have been deleted." << endl;
     }
-    sf.complete = true;
-
     pthread_cancel(sf.syncThread);
+    sf.complete = true;
     write(soc_fd, "c", 1);
     cout<<"closed"<<endl;
     close(soc_fd);
@@ -690,12 +689,6 @@ void SharedFiles::sortLocations() {
     pinger p = pinger();
     for(Location& l: locations){
         l.ping = p.ping(l.ip);
-        if(complete){
-            return;
-        }
-    }
-    if(complete){
-        return;
     }
     locations.sort(compare_locations);
 }

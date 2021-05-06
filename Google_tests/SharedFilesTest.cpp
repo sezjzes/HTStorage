@@ -89,7 +89,7 @@ TEST(TestSharedFiles, testSync){
 }
 // anything with ping can only be run as admin
 //TEST(TestSharedFiles, serializeAndUnserialize){
-//    SharedFiles sf = SharedFiles("/home/mlev/Projects/HTStorage/Google_tests/testfiles", 2048);
+//    SharedFiles sf = SharedFiles("/home/ubuntu/HTStorage/Google_tests/testfiles", 2048);
 //    sf.beginSharingFiles(false);
 //    sf.beginSharingFiles(false);
 //    char buff[2048];

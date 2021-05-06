@@ -12,7 +12,7 @@ int main() {
     e.allowRecieveJob();
     e.createResourceAd(1024);
 
-    char* ip = "172.31.13.131"; //"193.168.002.215";
+    char* ip = "18.222.110.161";
 
     e.advertiseToManager(ip, 8080);
     cout << "Execution: Sent the ResourceAd to the Manager at port 8080." << endl;

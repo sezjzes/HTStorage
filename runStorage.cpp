@@ -11,7 +11,7 @@ int main() {
     cout << "Storage: The primary Storage node is now ready now to receive copies of client files." << endl;
     s.createResourceAd(1024);
 
-    char* ip = "172.31.13.131";
+    char* ip = "18.222.110.161";
 
     s.advertiseToManager(ip, 8080);
     cout << "Storage: Sent the ResourceAd to the Manager." << endl;

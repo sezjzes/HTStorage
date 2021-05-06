@@ -1,0 +1,6 @@
+compute 1
+openRead testfile3.txt
+compute 1
+read testfile3.txt 6
+openWrite testfile4.txt
+write testfile4.txt 7 test123

@@ -119,6 +119,11 @@ void Job::PullJob(string path) {
     connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
     char buff[2048];
     int fd = open((char *)&path[0], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+    cout << "Job.cpp:  The fd opened is " << fd << endl;
+    if (fd < 0) {
+        perror("Job.cpp:  PullJob file creation failed: ");
+        exit(1);
+    }
     while(true){
         int r = read(soc_fd, buff, 2048);
         if (!r){

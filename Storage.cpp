@@ -39,7 +39,10 @@ static void* acceptNewStoragesLoop(void * args) {
         read(soc_fd, (char*)&j+4, ntohl(j.packageSize));
         SharedFiles & sf = *new SharedFiles((char *) &j);
         string dir = s->storageDir + "/" + to_string(s->folderNum++);
-        mkdir(&dir[0], 0777);
+        int dirfd = mkdir(&dir[0], 0777);
+        if (dirfd < 0) {
+            perror("Storage.cpp:  Failed to create the new directory for the storage of the job: ");
+        }
         sf.setLocalPath(dir);
         sf.pullInFiles();
         cout << "Storage.cpp: The SharedFiles object is pulling in the files locally." << endl;

@@ -3,6 +3,8 @@ project(HTStorage)
 
 set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(Google_tests)
+INCLUDE_DIRECTORIES(/home/mlev/ExternalC++Libraries)
+LINK_DIRECTORIES(/home/mlev/ExternalC++Libraries/asio-1.18.1)
 find_library(pthread pthread)
 add_executable(HTStorage main.cpp pinger.h pinger.cpp)
 add_executable(Manager runManager.cpp Manager.h Manager.cpp ResourceAd.h ResourceAd.cpp

@@ -8,13 +8,12 @@
 #include "SharedFiles.h"
 
 class Job {
-private:
-    SharedFiles shared_files;
-    string PathToLocalFile;
+public:
     char binaryIp[15];
     int binaryPort;
     int required_compute;
-public:
+    int required_storage;
+    string path_to_binary;
     //client
 
     /**
@@ -22,7 +21,7 @@ public:
      * @param files associated files object
      * @param code code to be run (may not be best as a char* unsure what to do)
      */
-    Job(string files, int storage, string path_to_code, int compute);
+    Job(int compute, int storage, string path_to_binary);
     Job();
     ~Job();
     /**

@@ -24,23 +24,20 @@
 #include <pthread.h>
 using namespace std;
 
-Job::Job(string files, int writeSize, string path_to_code, int compute) : shared_files(files, writeSize) {
-    PathToLocalFile = path_to_code;
+
+
+Job::Job(int compute, int storage, string path_to_binary_file) {
     required_compute = compute;
+    required_storage = storage;
+    path_to_binary = path_to_binary_file;
 }
 
 Job::~Job() {}
 
 
-int Job::getRequiredStorage() {
-    return shared_files.getSize();
-}
-
-int Job::getRequiredCompute() {
-    return required_compute;
-}
-
 Job::Job() {}
+
+
 
 void sendFile(int soc_fd, string path){
     string filePath = path;

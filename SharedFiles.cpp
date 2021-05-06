@@ -527,6 +527,8 @@ static void* acceptComplete(void* args){
         cout << "SharedFiles.cpp: The local version of the sharedfiles have been deleted." << endl;
     }
     sf.complete = true;
+
+    pthread_cancel(sf.syncThread);
     write(soc_fd, "c", 1);
     cout<<"closed"<<endl;
     close(soc_fd);
@@ -688,6 +690,12 @@ void SharedFiles::sortLocations() {
     pinger p = pinger();
     for(Location& l: locations){
         l.ping = p.ping(l.ip);
+        if(complete){
+            return;
+        }
+    }
+    if(complete){
+        return;
     }
     locations.sort(compare_locations);
 }
@@ -792,8 +800,7 @@ void SharedFiles::connectToSyncLocations() {
     inet_pton(AF_INET, syncIP, &serv_addr.sin_addr);
     while(connect(soc_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)));
     syncfd = soc_fd;
-    pthread_t p;
-    pthread_create(&p, NULL,
+    pthread_create(&syncThread, NULL,
                    recvUpdates, (void*) this);
 }
 

@@ -32,7 +32,7 @@ private:
     int syncPort;
     int syncfd;
 public:
-
+    pthread_t syncThread;
     list<Location> locations;
     string localPath;
     bool isClient;

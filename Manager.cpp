@@ -369,74 +369,21 @@ void Manager::assignJobs() {
         Job j = getNextJob();
         cout << "Manager.cpp: Pulled the next Job." << endl;
 
-        cout << "Manager.cpp: Running Algorithm 1 on the job." << endl;
+        cout << "Manager.cpp: Running the current algorithm on the job." << endl;
         vector<int> r = MatchJobToResources1(j);
-        cout << "Manager.cpp: Using Algorithm 1: Found the resources." << endl;
+        cout << "Manager.cpp: Found the resources." << endl;
         // TODO: the expected resource vector size is 3, so why would we repeat the algorithm here?
         while (r.size() < 3){
             vector<int> r = MatchJobToResources1(j);
         }
         ResourceAd &s11 = resource_map[r[1]];
         sendStorageToStorage(j, s11);
-        cout << "Manager.cpp:  Using Algorithm 1: Sent the storage to the primary Storage node." << endl;
+        cout << "Manager.cpp:  Sent the storage to the primary Storage node." << endl;
         ResourceAd &s21 = resource_map[r[2]];
         sendStorageToStorage(j, s21);
-        cout << "Manager.cpp:  Using Algorithm 1: Sent the storage to the backup Storage node." << endl;
+        cout << "Manager.cpp:  Sent the storage to the backup Storage node." << endl;
         ResourceAd &c1 = resource_map[r[0]];
         sendJobToCompute(j, c1);
-        cout << "Manager.cpp:  Using Algorithm 1: Sent the Job to the Execution node." << endl;
-
-        cout << "Manager.cpp: Running Algorithm 2 on the job." << endl;
-        vector<int> r2 = MatchJobToResources2(j);
-        cout << "Manager.cpp: Using Algorithm 2: Found the resources." << endl;
-        // TODO: the expected resource vector size is 3, so why would we repeat the algorithm here?
-        while (r.size() < 3){
-            vector<int> r2 = MatchJobToResources2(j);
-        }
-        ResourceAd &s12 = resource_map[r2[1]];
-        sendStorageToStorage(j, s12);
-        cout << "Manager.cpp:  Using Algorithm 2: Sent the storage to the primary Storage node." << endl;
-        ResourceAd &s22 = resource_map[r2[2]];
-        sendStorageToStorage(j, s22);
-        cout << "Manager.cpp:  Using Algorithm 2: Sent the storage to the backup Storage node." << endl;
-        ResourceAd &c2 = resource_map[r2[0]];
-        sendJobToCompute(j, c2);
-        cout << "Manager.cpp:  Using Algorithm 2: Sent the Job to the Execution node." << endl;
-
-
-        cout << "Manager.cpp: Running Algorithm 3 on the job." << endl;
-        vector<int> r3 = MatchJobToResources3(j);
-        cout << "Manager.cpp: Using Algorithm 3: Found the resources." << endl;
-        // TODO: the expected resource vector size is 3, so why would we repeat the algorithm here?
-        while (r.size() < 3){
-            vector<int> r3 = MatchJobToResources3(j);
-        }
-        ResourceAd &s13 = resource_map[r3[1]];
-        sendStorageToStorage(j, s13);
-        cout << "Manager.cpp:  Using Algorithm 3: Sent the storage to the primary Storage node." << endl;
-        ResourceAd &s23 = resource_map[r3[2]];
-        sendStorageToStorage(j, s23);
-        cout << "Manager.cpp:  Using Algorithm 3: Sent the storage to the backup Storage node." << endl;
-        ResourceAd &c3 = resource_map[r3[0]];
-        sendJobToCompute(j, c3);
-        cout << "Manager.cpp:  Using Algorithm 3: Sent the Job to the Execution node." << endl;
-
-
-        cout << "Manager.cpp: Running Algorithm 4 on the job." << endl;
-        vector<int> r4 = MatchJobToResources4(j);
-        cout << "Manager.cpp: Using Algorithm 4: Found the resources." << endl;
-        // TODO: the expected resource vector size is 3, so why would we repeat the algorithm here?
-        while (r.size() < 3){
-            vector<int> r4 = MatchJobToResources4(j);
-        }
-        ResourceAd &s14 = resource_map[r4[1]];
-        sendStorageToStorage(j, s14);
-        cout << "Manager.cpp:  Using Algorithm 4: Sent the storage to the primary Storage node." << endl;
-        ResourceAd &s24 = resource_map[r4[2]];
-        sendStorageToStorage(j, s24);
-        cout << "Manager.cpp:  Using Algorithm 4: Sent the storage to the backup Storage node." << endl;
-        ResourceAd &c4 = resource_map[r4[0]];
-        sendJobToCompute(j, c4);
-        cout << "Manager.cpp:  Using Algorithm 4: Sent the Job to the Execution node." << endl;
+        cout << "Manager.cpp:  Sent the Job to the Execution node." << endl;
     }
 }

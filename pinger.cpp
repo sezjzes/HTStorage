@@ -5,6 +5,7 @@
 #include "pinger.h"
 #include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <sys/time.h>
 
@@ -39,49 +40,53 @@ unsigned short checksum(void *b, int len)
 }
 
 int pinger::ping(char * ip){
-    struct sockaddr from;
-    struct protoent *proto;
-    struct sockaddr whereto;
-    struct sockaddr_in *to = (struct sockaddr_in *) &whereto;
-    to->sin_family = AF_INET;
-    to->sin_addr.s_addr = inet_addr(ip);
-    proto = getprotobyname("icmp");
-    int s = socket(AF_INET, SOCK_RAW, proto->p_proto);
-    static u_char outpack[4096] = {0};
-    struct icmp *icp = (struct icmp *) outpack;
-    icp->icmp_type = ICMP_ECHO;
-    icp->icmp_code = 0;
-    icp->icmp_cksum = 0;
-    icp->icmp_seq = 0;
-    icp->icmp_id = ++pnum;
-    int i, cc;
-    cc = 64;
-    struct timeval *tp = (struct timeval *) &outpack[8];
-    u_char *datap = &outpack[8+sizeof(struct timeval)];
-    for( i=8; i<64-8; i++)	/* skip 8 for time */
-        *datap++ = i;
-    gettimeofday( tp, NULL);
+    string command = "ping -c 1 ";
+    command += *ip;
+    command += " | head -n 2 | sed -n \'s/.*time=//p\' | sed -n \'s/.*[0-9]* ms//p\'";
+    return system(command.c_str());
+    // struct sockaddr from;
+    // struct protoent *proto;
+    // struct sockaddr whereto;
+    // struct sockaddr_in *to = (struct sockaddr_in *) &whereto;
+    // to->sin_family = AF_INET;
+    // to->sin_addr.s_addr = inet_addr(ip);
+    // proto = getprotobyname("icmp");
+    // int s = socket(AF_INET, SOCK_RAW, proto->p_proto);
+    // static u_char outpack[4096] = {0};
+    // struct icmp *icp = (struct icmp *) outpack;
+    // icp->icmp_type = ICMP_ECHO;
+    // icp->icmp_code = 0;
+    // icp->icmp_cksum = 0;
+    // icp->icmp_seq = 0;
+    // icp->icmp_id = ++pnum;
+    // int i, cc;
+    // cc = 64;
+    // struct timeval *tp = (struct timeval *) &outpack[8];
+    // u_char *datap = &outpack[8+sizeof(struct timeval)];
+    // for( i=8; i<64-8; i++)	/* skip 8 for time */
+    //     *datap++ = i;
+    // gettimeofday( tp, NULL);
 
-    icp->icmp_cksum = checksum( icp, cc );
-    sendto( s, outpack, cc, 0, &whereto, sizeof(struct sockaddr) );
-    struct icmp * icp2;
+    // icp->icmp_cksum = checksum( icp, cc );
+    // sendto( s, outpack, cc, 0, &whereto, sizeof(struct sockaddr) );
+    // struct icmp * icp2;
 
-    char packet[4096];
-    size_t len = sizeof (packet);
-    socklen_t fromlen = sizeof (from);
+    // char packet[4096];
+    // size_t len = sizeof (packet);
+    // socklen_t fromlen = sizeof (from);
 
-    while(true){
-        recvfrom(s, (void *) packet, len, 0, &from, &fromlen);
-        struct ip* ipp = (struct ip*) packet;
-        int hlen = ipp->ip_hl << 2;
-        icp2 = (struct icmp *)(packet + hlen);
-        if(icp->icmp_id == icp2->icmp_id){break;}
-    }
-    struct timeval tv, tt;
-    gettimeofday( &tv, NULL);
-    timersub( &tv, tp, &tt);
-    int triptime = tt.tv_sec*1000000+(tt.tv_usec);
-    return  triptime;
+    // while(true){
+    //     recvfrom(s, (void *) packet, len, 0, &from, &fromlen);
+    //     struct ip* ipp = (struct ip*) packet;
+    //     int hlen = ipp->ip_hl << 2;
+    //     icp2 = (struct icmp *)(packet + hlen);
+    //     if(icp->icmp_id == icp2->icmp_id){break;}
+    // }
+    // struct timeval tv, tt;
+    // gettimeofday( &tv, NULL);
+    // timersub( &tv, tp, &tt);
+    // int triptime = tt.tv_sec*1000000+(tt.tv_usec);
+    // return  triptime;
 }
 
 char *pinger::getLocalIp() {

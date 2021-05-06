@@ -60,7 +60,7 @@ static void* StartApplicationHelper(void* v) {
     std::cout<<"man"<<std::endl;
     valread = read( new_socket , buffer, 1024);
     printf("%s\n",buffer );
-    send(new_socket , hello , strlen(hello) , 0 );
+    write(new_socket , hello , strlen(hello));
     printf("Hello message sent\n");
 }
 void managerApp::StartApplication() {

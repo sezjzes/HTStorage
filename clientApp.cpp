@@ -39,7 +39,7 @@ static void* StartApplicationHelper(void* v) {
     {
         printf("\nConnection Failed \n");
     }
-    send(sock , hello , strlen(hello) , 0 );
+    write(sock , hello , strlen(hello));
     printf("Hello message sent\n");
     valread = read( sock , buffer, 1024);
     printf("%s\n",buffer );

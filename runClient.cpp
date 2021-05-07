@@ -12,19 +12,19 @@ int main() {
     struct timeval tp;
     gettimeofday( &tp, NULL);
     int n = 10;
-    vector<Client> clients;
+    vector<Client*> clients;
     for(int i = 0; i < n; i++) {
-        Client c= Client(
+        Client* c= new Client(
                 "/home/ubuntu/HTStorage/tests/binaries/simpleRun.txt", 2,
                 "/home/ubuntu/HTStorage/tests/files/" + to_string(i), 7);
         char *ip = "18.222.110.161";
         cout << "Client: Created the client at ip address " << ip << endl;
-        c.sendJobToManger(ip, 8081);
+        c->sendJobToManger(ip, 8081);
         cout << "Client: Sent the job to the manager at port 8081." << endl;
         clients.push_back(c);
     }
     for(auto &c: clients) {
-        c.waitForComplete();
+        c->waitForComplete();
     }
 
     struct timeval tv, tt;

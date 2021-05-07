@@ -7,7 +7,7 @@
 using namespace std;
 
 int main() {
-    Execution e = Execution("/home/ubuntu/HTStorage/workingDir/execution1");
+    Execution e = Execution("/home/ubuntu/HTStorage/workingDir/execution");
     cout << "Execution: Created the local Execution object." << endl;
     e.allowRecieveJob();
     e.createResourceAd(1024);
@@ -18,13 +18,4 @@ int main() {
     cout << "Execution: Sent the ResourceAd to the Manager at port 8080." << endl;
 
     e.executeJobs();
-
-    Execution e2 = Execution("/home/ubuntu/HTStorage/workingDir/execution2");
-    cout << "Execution: Created the 2nd local Execution object." << endl;
-    e2.allowRecieveJob();
-    e2.createResourceAd(1024);
-    e2.advertiseToManager(ip, 8080);
-    cout << "Execution: Sent the ResourceAd to the Manager at port 8080." << endl;
-
-    e2.executeJobs();    
 }

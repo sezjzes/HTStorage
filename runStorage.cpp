@@ -22,21 +22,5 @@ int main() {
     s2.createResourceAd(1024);
     s2.advertiseToManager(ip, 8080);
     cout << "Storage: Sent the ResourceAd to the Manager." << endl;
-
-    Storage s3 = Storage("/home/ubuntu/HTStorage/workingDir/storage3");
-    cout << "Storage: Created the 2nd primary Storage node." << endl;
-    s3.allowRecieveStorage();
-    cout << "Storage: The 2nd primary Storage node is now ready now to receive copies of client files." << endl;
-    s3.createResourceAd(1024);
-    s3.advertiseToManager(ip, 8080);
-    cout << "Storage: Sent the ResourceAd to the Manager." << endl;
-    Storage s4 = Storage("/home/ubuntu/HTStorage/workingDir/storage4");
-    cout << "Storage: Created the 2nd backup Storage node." << endl;
-    s4.allowRecieveStorage();
-    cout << "Storage: The 2nd backup Storage node is now ready now to receive copies of client files." << endl;
-    s4.createResourceAd(1024);
-    s4.advertiseToManager(ip, 8080);
-    cout << "Storage: Sent the ResourceAd to the Manager." << endl;
-
     while(true);
 }

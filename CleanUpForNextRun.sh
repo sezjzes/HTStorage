@@ -16,4 +16,4 @@ done
 cd ../..
 
 # Clean up the working directory.
-rm -r -f workingDir/execution1/* workingDir/execution2/* workingDir/storage1/* workingDir/storage2/* workingDir/storage3/* workingDir/storage4/*
+rm -r -f workingDir/execution/* workingDir/storage1/* workingDir/storage2/*

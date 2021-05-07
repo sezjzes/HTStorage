@@ -688,11 +688,8 @@ static bool compare_locations (const Location& first, const Location& second)
 void SharedFiles::sortLocations() {
     pinger p = pinger();
     for(Location& l: locations){
-        if(complete){pthread_exit(NULL);}
         l.ping = p.ping(l.ip);
-        if(complete){pthread_exit(NULL);}
     }
-    if(complete){pthread_exit(NULL);}
     locations.sort(compare_locations);
 }
 

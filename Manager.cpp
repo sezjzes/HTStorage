@@ -103,14 +103,14 @@ vector<int> Manager::MatchJobToResources2(Job job) {
     // it to the front of the resource_vector.
     map<int, unordered_set<int>> closest_compute = closest_resources[resource_vector.at(0)]["compute"];
     for (auto i = closest_compute.begin(); i != closest_compute.end(); ++i) {
-        if (resource_vector.size() >= 2) {
+        if (resource_vector.size() >= 3) {
             break;
         }
         for (auto j = i->second.begin(); j != i->second.end(); ++j) {
             ResourceAd resource_ad = resource_map.at(*j);
             if (resource_ad.getAvailableCompute() >= required_compute) {
-                resource_vector.push_back(*j);
-                resource_vector.reserve(3);
+	      resource_vector.emplace(resource_vector.begin(), *j);
+	      // resource_vector.reserve(3);
                 break;
             }
         }
@@ -376,7 +376,7 @@ void Manager::assignJobs() {
         cout << "Manager.cpp: Pulled the next Job." << endl;
 
         cout << "Manager.cpp: Running the current algorithm on the job." << endl;
-        vector<int> r = MatchJobToResources1(j);
+        vector<int> r = MatchJobToResources2(j);
         cout << "Manager.cpp: Found the resources." << endl;
         ResourceAd &s11 = resource_map[r[1]];
         sendStorageToStorage(j, s11);

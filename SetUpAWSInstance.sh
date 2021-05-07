@@ -8,7 +8,7 @@ sudo apt install g++ make -y
 # Build the working directory.
 mkdir workingDir
 cd workingDir
-mkdir execution storage1 storage2
+mkdir execution1 execution2 storage1 storage2 storage3 storage4
 cd ..
 
 # Build the client workspaces and files.

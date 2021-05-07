@@ -526,7 +526,7 @@ static void* acceptComplete(void* args){
         fs::remove_all(sf.localPath);
         cout << "SharedFiles.cpp: The local version of the sharedfiles have been deleted." << endl;
     }
-    pthread_cancel(sf.syncThread);
+    pthread_detach(sf.syncThread);
     sf.complete = true;
     write(soc_fd, "c", 1);
     cout<<"closed"<<endl;
@@ -563,7 +563,7 @@ int SharedFiles::allowComplete() {
 
 void SharedFiles::sendComplete() {
     cout << "SharedFiles.cpp: Beginning to send out the Complete." << endl;
-    complete = true;
+    pthread_detach(syncThread);
     struct sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
     for(Location l: locations){
@@ -602,6 +602,8 @@ void SharedFiles::sendComplete() {
         read(soc_fd, &c, 1);
 
     }
+
+    complete = true;
     cout << "SharedFiles.cpp: Finished sending out the Complete." << endl;
 }
 
@@ -690,11 +692,15 @@ void SharedFiles::sortLocations() {
     for(Location& l: locations){
         l.ip[15] = 0;
         l.ping = p.ping(l.ip);
+        if(complete){
+            pthread_exit(0);
+        }
     }
     locations.sort(compare_locations);
 }
 
 [[noreturn]] static void* acceptingSyncLocations(void* args){
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     int soc_fd, server_fd;
     arguments* arg = (arguments*)args;
     server_fd = arg->soc;
@@ -775,9 +781,10 @@ void SharedFiles::handelSyncLocations() {
 }
 
 static void* recvUpdates(void* self){
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     SharedFiles &sf = *((SharedFiles *) self);
     SharedFiles::serializedLocationList sll;
-    while (true){
+    while (!sf.complete){
         int r = read(sf.getSyncfd(), (void *) &sll, 4);
         if (r == 0){break;}
         r = read(sf.getSyncfd(), (void *) &(sll.numLocations), ntohl(sll.packageSize));

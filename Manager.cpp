@@ -378,10 +378,6 @@ void Manager::assignJobs() {
         cout << "Manager.cpp: Running the current algorithm on the job." << endl;
         vector<int> r = MatchJobToResources1(j);
         cout << "Manager.cpp: Found the resources." << endl;
-        // TODO: the expected resource vector size is 3, so why would we repeat the algorithm here?
-        while (r.size() < 3){
-            vector<int> r = MatchJobToResources1(j);
-        }
         ResourceAd &s11 = resource_map[r[1]];
         sendStorageToStorage(j, s11);
         cout << "Manager.cpp:  Sent the storage to the primary Storage node." << endl;

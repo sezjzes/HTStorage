@@ -153,8 +153,9 @@ void Job::Run() {
 
     map<string, int> files = map<string, int>();
     while ((r = getline(&line, &len, fp)) != -1) {
+      cout << "Job.cpp: The value of r is " + to_string(r) + ". Starting the if statement to check for newline char." << endl;
         if(line[r-1] == '\n'){line[r-1] = 0;}
-
+	cout << "Job.cpp: The value of r is " + to_string(r) + ".  Ending the if statement to check for newline char." << endl;
         char buff[2048];
         if(!strncmp(line, "compute", 7)){
             int i = atoi(line+8);

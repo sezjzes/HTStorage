@@ -12,7 +12,7 @@
 
 using namespace std;
 struct Location{
-    char ip[15];
+    char ip[16];
     bool isClient;
     int readPort;
     int writePort;

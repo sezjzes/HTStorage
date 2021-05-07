@@ -5,6 +5,7 @@
 using namespace std;
 
 #include <sys/time.h>
+#include <string>
 #include <vector>
 
 int main() {
@@ -15,7 +16,7 @@ int main() {
     for(int i = 0; i < n; i++) {
         Client c= Client(
                 "/home/ubuntu/HTStorage/tests/binaries/simpleRun.txt", 2,
-                "/home/ubuntu/HTStorage/tests/files", 7);
+                "/home/ubuntu/HTStorage/tests/files/" + to_string(i), 7);
         char *ip = "18.222.110.161";
         cout << "Client: Created the client at ip address " << ip << endl;
         c.sendJobToManger(ip, 8081);

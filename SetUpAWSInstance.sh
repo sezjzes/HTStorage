@@ -24,7 +24,8 @@ mkdir build
 cd build
 sudo cmake ..
 sudo make
+cd ..
 
 # Make the other bash scripts executable.
-chmod +x Rebuild.sh
-chmod +x CleanUpForNextRun.sh
+sudo chmod +x Rebuild.sh
+sudo chmod +x CleanUpForNextRun.sh

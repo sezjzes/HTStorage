@@ -21,6 +21,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <cstring>
 using namespace std;
 
 unsigned short checksum(void *b, int len)

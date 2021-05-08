@@ -58,7 +58,7 @@ int pinger::ping(char * ip){
     cout << "pinger.cpp: 13" << endl;
     int ping_time = system(command.c_str());
     cout << "pinger.cpp: 14" << endl;
-    cout << "pinger.cpp: Received the ping time." << endl;
+    cout << "pinger.cpp: Received the ping time: " << ping_time << endl;
     return ping_time;
     // struct sockaddr from;
     // struct protoent *proto;

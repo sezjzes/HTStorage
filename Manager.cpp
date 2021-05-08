@@ -376,7 +376,7 @@ void Manager::assignJobs() {
         cout << "Manager.cpp: Pulled the next Job." << endl;
 
         cout << "Manager.cpp: Running the current algorithm on the job." << endl;
-        vector<int> r = MatchJobToResources4(j);
+        vector<int> r = MatchJobToResources1(j);
         cout << "Manager.cpp: Found the resources." << endl;
         ResourceAd &s11 = resource_map[r[1]];
         sendStorageToStorage(j, s11);

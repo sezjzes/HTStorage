@@ -11,11 +11,11 @@ int main() {
     cout << "Storage: The primary Storage node is now ready now to receive copies of client files." << endl;
     s.createResourceAd(1024);
 
-    char* ip = "18.222.110.161";
+    char* ip = "3.134.85.120";
 
     s.advertiseToManager(ip, 8080);
     cout << "Storage: Sent the ResourceAd to the Manager." << endl;
-    Storage s2 = Storage("/home/ubuntu/HTStorage/workingDir/storage2");
+    Storage s2 = Storage("/Users/joshszczesniak/Desktop/525/HTStorage/workingDir/storage2");
     cout << "Storage: Created the backup Storage node." << endl;
     s2.allowRecieveStorage();
     cout << "Storage: The backup Storage node is now ready now to receive copies of client files." << endl;

@@ -17,7 +17,7 @@ int main() {
         Client* c= new Client(
                 "/home/ubuntu/HTStorage/tests/binaries/simpleRun.txt", 2,
                 "/home/ubuntu/HTStorage/tests/files/" + to_string(i), 7);
-        char *ip = "18.222.110.161";
+        char *ip = "3.134.85.120";
         cout << "Client: Created the client at ip address " << ip << endl;
         c->sendJobToManger(ip, 8081);
         cout << "Client: Sent the job to the manager at port 8081." << endl;

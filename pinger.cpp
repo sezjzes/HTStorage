@@ -54,6 +54,9 @@ int pinger::ping(char * ip){
     cout << "pinger.cpp: 11" << endl;
     command += *ip;
     cout << ip << endl;
+    if (strncmp(getLocalIp(), ip, 10)){
+        return 0;
+    }
 //    command += " | head -n 2 | sed -n \'s/.*time=//p\' | sed -n \'s/.*[0-9]* ms//p\'";
 //    cout << "pinger.cpp: 13" << endl;
 //    int ping_time = system(command.c_str());

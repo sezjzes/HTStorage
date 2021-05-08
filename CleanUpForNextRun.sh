@@ -9,7 +9,7 @@ sudo rm -r -f temp
 
 # Rebuild the client workspaces and files.
 cd tests/files/
-mkdir {0..10}
+mkdir {0..100}
 for dir in */; do
     cp testfile3.txt testfile4.txt $dir
 done

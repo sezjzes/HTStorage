@@ -53,13 +53,14 @@ int pinger::ping(char * ip){
     string command = "ping -c 1 ";
     cout << "pinger.cpp: 11" << endl;
     command += *ip;
-    cout << "pinger.cpp: 12" << endl;
-    command += " | head -n 2 | sed -n \'s/.*time=//p\' | sed -n \'s/.*[0-9]* ms//p\'";
-    cout << "pinger.cpp: 13" << endl;
-    int ping_time = system(command.c_str());
-    cout << "pinger.cpp: 14" << endl;
-    cout << "pinger.cpp: Received the ping time: " << ping_time << endl;
-    return ping_time;
+    cout << ip << endl;
+//    command += " | head -n 2 | sed -n \'s/.*time=//p\' | sed -n \'s/.*[0-9]* ms//p\'";
+//    cout << "pinger.cpp: 13" << endl;
+//    int ping_time = system(command.c_str());
+//    cout << "pinger.cpp: 14" << endl;
+//    cout << "pinger.cpp: Received the ping time: " << ping_time << endl;
+
+    return 1;
     // struct sockaddr from;
     // struct protoent *proto;
     // struct sockaddr whereto;

@@ -11,7 +11,7 @@ using namespace std;
 int main() {
     struct timeval tp;
     gettimeofday( &tp, NULL);
-    int n = 20;
+    int n = 10;
     vector<Client*> clients;
     for(int i = 0; i < n; i++) {
         Client* c= new Client(

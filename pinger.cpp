@@ -25,26 +25,39 @@ using namespace std;
 
 unsigned short checksum(void *b, int len)
 {
+    cout << "pinger.cpp: 1" << endl;
     unsigned short *buf = (unsigned short *)b;
     unsigned int sum=0;
     unsigned short result;
 
+    cout << "pinger.cpp: 2" << endl;
     for ( sum = 0; len > 1; len -= 2 )
+        cout << "pinger.cpp: 3" << endl;
         sum += *buf++;
+        cout << "pinger.cpp: 4" << endl;
     if ( len == 1 )
+        cout << "pinger.cpp: 5" << endl;
         sum += *(unsigned char*)buf;
+        cout << "pinger.cpp: 6" << endl;
     sum = (sum >> 16) + (sum & 0xFFFF);
+    cout << "pinger.cpp: 7" << endl;
     sum += (sum >> 16);
+    cout << "pinger.cpp: 8" << endl;
     result = ~sum;
+    cout << "pinger.cpp: 9" << endl;
     return result;
 }
 
 int pinger::ping(char * ip){
     cout << "pinger.cpp: Starting to send out a ping." << endl;
     string command = "ping -c 1 ";
+    cout << "pinger.cpp: 11" << endl;
     command += *ip;
+    cout << "pinger.cpp: 12" << endl;
     command += " | head -n 2 | sed -n \'s/.*time=//p\' | sed -n \'s/.*[0-9]* ms//p\'";
+    cout << "pinger.cpp: 13" << endl;
     int ping_time = system(command.c_str());
+    cout << "pinger.cpp: 14" << endl;
     cout << "pinger.cpp: Received the ping time." << endl;
     return ping_time;
     // struct sockaddr from;
@@ -93,13 +106,18 @@ int pinger::ping(char * ip){
 }
 
 char *pinger::getLocalIp() {
+    cout << "pinger.cpp: 15" << endl;
     //todo: make this not local host
     char host[256];
     char *ip;
     struct hostent *host_entry;
     int hostname;
+    cout << "pinger.cpp: 16" << endl;
     hostname = gethostname(host, sizeof(host)); //find the host name
+    cout << "pinger.cpp: 17" << endl;
     host_entry = gethostbyname(host); //find host information
+    cout << "pinger.cpp: 18" << endl;
     ip = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0]));
+    cout << "pinger.cpp: 19" << endl;
     return ip;
 }

@@ -673,13 +673,12 @@ void SharedFiles::unserializeLocationList(serializedLocationList * sll) {
 
 SharedFiles::SharedFiles(char *serializedVersion) {
     serialized* s = (serialized*)serializedVersion;
+    isClient = false;
+    complete = false;
     size = ntohl(s->size);
     syncPort = ntohl(s->syncPort);
     strncpy(syncIP, s->syncIp,15);
     unserializeLocationList(&s->locationList);
-
-    isClient = false;
-    complete = false;
 }
 
 static bool compare_locations (const Location& first, const Location& second)

@@ -129,9 +129,9 @@ void Execution::createResourceAd(int compute) {
 void Execution::executeJobs() {
     cout << "Execution.cpp: Starting to execute the jobs." << endl;
     while (true){
-        cout << "Execution.cpp: 39" << endl;
+        //cout << "Execution.cpp: 39" << endl;
         if(job_queue.size() < 1){
-            cout << "Execution.cpp: 40" << endl;
+            //cout << "Execution.cpp: 40" << endl;
             continue;
             cout << "Execution.cpp: 41" << endl;
         }
